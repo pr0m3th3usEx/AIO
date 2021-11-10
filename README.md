@@ -4,8 +4,9 @@
 
 You will be able to start the project following the different steps below:
 
+Add `.env` (which are templated with .env.example files) in both `dash_front` and `dash_back` folders.
 
-First, install the dependencies for both and front running
+After that, install the dependencies for both and front running
 
 ```bash
 $ make build && make install # (Only one line of command, amazing! )

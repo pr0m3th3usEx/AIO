@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  dash_db:
+    container_name: dash_db
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=dashboard
+
+
+  dash_back:
+    container_name: dash_back
+    image: node:14-alpine
+    working_dir: /app
+    command: yarn start:dev
+    restart: unless-stopped
+    depends_on:
+      - dash_db
+    env_file: ./dash_back/.env
+    volumes:
+      - db:/var/lib/postgresql/data
+    ports:
+      - "8080:8080"
+
+  dash_front:
+    container_name: dash_front
+    image: node:14-alpine
+    working_dir: /app
+    command: yarn start
+    restart: unless-stopped
+    depends_on:
+      - dash_back
+    env_file: ./dash_front/.env
+    ports:
+      - "5000:5000"
+
+volumes:
+  db:

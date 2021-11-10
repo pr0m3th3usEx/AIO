@@ -8,6 +8,8 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=dashboard
+    volumes:
+      - db:/var/lib/postgresql/data
 
 
   dash_back:
@@ -20,7 +22,7 @@ services:
       - dash_db
     env_file: ./dash_back/.env
     volumes:
-      - db:/var/lib/postgresql/data
+      - "./dash_back:/app"
     ports:
       - "8080:8080"
 
@@ -33,6 +35,8 @@ services:
     depends_on:
       - dash_back
     env_file: ./dash_front/.env
+    volumes:
+      - "./dash_front:/app"
     ports:
       - "5000:5000"
 

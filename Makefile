@@ -42,4 +42,5 @@ dash_test:
 
 # dash_seed:
 
+.PHONY = up upd down build install dash_db dash_back dash_studio dash_studiod dash_migrate dash_generate dash_test
 

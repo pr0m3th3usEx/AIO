@@ -32,4 +32,4 @@ Some additional features for setup will be added later:
 ## Contributors
 
 - Thomas Michel (@pr0m3th3usEx)
-- Pierre Dubosq (@pierredubosq)
+- Pierre Dubosq (@PierreDubosq)

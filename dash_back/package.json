@@ -1,0 +1,13 @@
+{
+  "name": "dash_back",
+  "version": "1.0.0",
+  "main": "main.ts",
+  "repository": "https://github.com/EpitechPromo2024/B-DEV-500-BAR-5-1-dashboard-thomas1.michel",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^16.11.7",
+    "prisma": "^3.4.2",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.4.4"
+  }
+}

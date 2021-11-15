@@ -1,4 +1,4 @@
-# Dashboard 
+# Dashboard
 
 ## Setup
 
@@ -18,7 +18,7 @@ Once the dependencies installed, you can run the project:
 $ make up # or make upd if you want it to run in background
 ```
 
-In order to visualize your database, you can run the studio powered by *Prisma*:
+In order to visualize your database, you can run the studio powered by _Prisma_:
 
 ```bash
 make dash_studio # or make dash_studiod if you want it to in background
@@ -28,7 +28,31 @@ Some additional features for setup will be added later:
 
 - Be able to seed the project for development: `make dash_seed`
 
+## Services
 
+### Epitech Intra
+
+- Widget that fetch project and display due date
+
+### Weather
+
+- Widget that display current weather and previsions according to the selected city
+
+### Google Translate
+
+- Widget to translate from a source language to another
+
+### Cryptocurrency
+
+- Widget to display information about a specified crypto
+
+### Twitter
+
+- Widget that display the last tweets from a specified user
+
+### Subreddit
+
+- Display Posts from a specific Subreddit
 
 ## Contributors
 

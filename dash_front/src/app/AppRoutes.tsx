@@ -1,5 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 
 import Login from 'pages/auth/Login';
 import Register from 'pages/auth/Register';
@@ -13,6 +18,7 @@ const AuthRoutes = (): JSX.Element => (
     <Routes>
       <Route path="register" element={<Register />} />
       <Route path="login" element={<Login />} />
+      <Route path="*" element={<Navigate to="/auth/login" />} />
     </Routes>
   </AuthLayout>
 );
@@ -21,7 +27,8 @@ const DashboardRoutes = (): JSX.Element => (
   <DashboardLayout>
     <Routes>
       <Route index element={<Dashboard />} />
-      <Route path="/dashboard/profile" element={<Profile />} />
+      <Route path="profile" element={<Profile />} />
+      <Route path="*" element={<Navigate to="/dashboard" />} />
     </Routes>
   </DashboardLayout>
 );

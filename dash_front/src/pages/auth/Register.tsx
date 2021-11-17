@@ -13,7 +13,7 @@ class UserRegistrationFields {
   })
   username: string;
 
-  @IsEmail()
+  @IsEmail({}, { message: 'E-mail format is not valid' })
   email: string;
 
   @MinLength(8, {
@@ -43,7 +43,7 @@ const Register: FC = (): JSX.Element => {
   });
 
   useEffect(() => {
-    if (Object.entries(errors).length > 0) {
+    if (Object.keys(errors).length > 0) {
       toast({
         title: 'Incorrect fields',
         description: `

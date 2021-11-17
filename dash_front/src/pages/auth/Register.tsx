@@ -60,7 +60,7 @@ const Register: FC = (): JSX.Element => {
         isClosable: true,
       });
     }
-  }, [errors]);
+  }, [errors, toast]);
 
   return (
     <Center minH="80vh" overflowX="hidden">

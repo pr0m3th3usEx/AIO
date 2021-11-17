@@ -40,7 +40,7 @@ const Login: FC = (): JSX.Element => {
         isClosable: true,
       });
     }
-  }, [errors]);
+  }, [errors, toast]);
 
   const onSubmit = handleSubmit((data: UserLoginField) => {
     console.log(data);

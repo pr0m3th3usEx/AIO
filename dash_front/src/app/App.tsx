@@ -1,8 +1,7 @@
-import { Box } from '@chakra-ui/layout';
-import React from 'react';
+import AppRoutes from './AppRoutes';
 
 function App() {
-  return <Box bg="tiffany"></Box>;
+  return <AppRoutes />;
 }
 
 export default App;

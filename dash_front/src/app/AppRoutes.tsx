@@ -21,7 +21,7 @@ const DashboardRoutes = (): JSX.Element => (
   <DashboardLayout>
     <Routes>
       <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/dashboard" element={<Profile />} />
+      <Route path="/profile" element={<Profile />} />
     </Routes>
   </DashboardLayout>
 );

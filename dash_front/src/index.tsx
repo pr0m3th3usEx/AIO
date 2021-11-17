@@ -4,12 +4,14 @@ import { ChakraProvider } from '@chakra-ui/react';
 import App from 'app/App';
 import theme from 'utils/theme';
 import '@fontsource/titillium-web';
+import { Provider } from 'react-redux';
+import store from 'utils/store';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <ChakraProvider theme={theme}>
+  <ChakraProvider theme={theme}>
+    <Provider store={store}>
       <App />
-    </ChakraProvider>
-  </React.StrictMode>,
+    </Provider>
+  </ChakraProvider>,
   document.getElementById('root'),
 );

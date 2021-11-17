@@ -23,7 +23,9 @@ const Login: FC = (): JSX.Element => {
                 </Text>
               </Box>
             </Link>
-            <Button fontWeight="bold">Log in</Button>
+            <Button fontWeight="bold" type="submit">
+              Log in
+            </Button>
           </HStack>
         </VStack>
       </VStack>

@@ -14,4 +14,8 @@ export const theme = extendTheme({
       light: '#f0f0f0',
     },
   },
+  fonts: {
+    heading: 'Titillium Web',
+    body: 'Titillium Web',
+  },
 });

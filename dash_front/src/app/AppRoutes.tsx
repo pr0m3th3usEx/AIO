@@ -11,8 +11,8 @@ import DashboardLayout from 'pages/dashboard/Layout';
 const AuthRoutes = (): JSX.Element => (
   <AuthLayout>
     <Routes>
-      <Route path="/auth/register" element={<Register />} />
-      <Route path="/auth/login" element={<Login />} />
+      <Route path="register" element={<Register />} />
+      <Route path="login" element={<Login />} />
     </Routes>
   </AuthLayout>
 );
@@ -20,8 +20,8 @@ const AuthRoutes = (): JSX.Element => (
 const DashboardRoutes = (): JSX.Element => (
   <DashboardLayout>
     <Routes>
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/profile" element={<Profile />} />
+      <Route index element={<Dashboard />} />
+      <Route path="/dashboard/profile" element={<Profile />} />
     </Routes>
   </DashboardLayout>
 );
@@ -30,8 +30,8 @@ const AppRoutes = (): JSX.Element => {
   return (
     <Router>
       <Routes>
-        <Route path="/auth" element={<AuthRoutes />} />
-        <Route path="/*" element={<DashboardRoutes />} />
+        <Route path="/auth/*" element={<AuthRoutes />} />
+        <Route path="/dashboard/*" element={<DashboardRoutes />} />
       </Routes>
     </Router>
   );

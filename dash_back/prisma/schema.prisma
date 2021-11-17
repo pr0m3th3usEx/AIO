@@ -9,3 +9,76 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum ServiceType {
+  GOOGLE
+  WEATHER
+  CRYPTO
+  INTRA
+  TWITTER
+  REDDIT
+}
+
+enum WidgetType {
+  GOOGLE
+  WEATHER
+  CRYPTO
+  INTRA
+  TWITTER
+  REDDIT
+}
+
+enum ParameterType {
+  INTEGER
+  STRING
+}
+
+model User {
+  id            String                  @id @default(uuid())
+  username      String                  @unique
+  email         String                  @unique
+  password      String                  
+  is_admin      Boolean
+  created_at    DateTime                @default(now())
+  updated_at    DateTime                @updatedAt
+  widgets       Widget[]
+  services      Service[]
+}
+
+model Service {
+  id            String                  @id @default(uuid())
+  type          ServiceType
+  user          User                    @relation(fields: [user_id], references: [id])
+  user_id       String
+  is_activated  Boolean
+  oauth2        Boolean
+  access_token  String
+  refresh_token String
+  created_at    DateTime                @default(now())
+  updated_at    DateTime                @updatedAt
+  widgets       Widget[]
+}
+
+model Widget {
+  id            String                  @id @default(uuid())
+  type          WidgetType
+  user          User                    @relation(fields: [user_id], references: [id])
+  user_id       String
+  service       Service                 @relation(fields: [service_id], references: [id])
+  service_id    String
+  refresh_rate  Int
+  created_at    DateTime                @default(now())
+  updated_at    DateTime                @updatedAt
+  parameters    WidgetParameter[]
+}
+
+model WidgetParameter {
+  id            String                  @id @default(uuid())
+  widget        Widget                  @relation(fields: [widget_id], references: [id])
+  widget_id     String
+  type          ParameterType
+  value_int     Int?
+  value_string  String?
+  created_at    DateTime                @default(now())
+  updated_at    DateTime                @updatedAt
+}

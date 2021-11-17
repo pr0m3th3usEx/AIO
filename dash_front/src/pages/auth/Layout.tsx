@@ -6,7 +6,7 @@ const Layout = ({
   children: JSX.Element[] | JSX.Element;
 }): JSX.Element => {
   return (
-    <Box w="100%" h="100vh" bg="tiffany" overflowX="hidden" px="30px" py="20px">
+    <Box bg="tiffany" px="30px" py="20px" minH="100vh">
       <Heading>
         <Text>Dashboard</Text>
       </Heading>

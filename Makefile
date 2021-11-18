@@ -15,7 +15,7 @@ build:
 install:
 	docker-compose run --rm --no-deps dash_back yarn --silent
 	docker-compose run --rm --no-deps dash_front yarn --silent
-	docker-compose run --rm dash_back sh -c "yarn prisma migrate && yarn prisma generate"
+	docker-compose run --rm dash_back sh -c "yarn prisma migrate dev && yarn prisma generate"
 
 dash_db:
 	docker-compose up dash_db
@@ -32,7 +32,7 @@ dash_studiod:
 	docker-compose run -d -p 8888:8888 --rm dash_back yarn prisma studio -p 8888
 
 dash_migrate:
-	docker-compose run --rm dash_back sh -c 'yarn prisma migrate && yarn prisma generate'
+	docker-compose run --rm dash_back sh -c 'yarn prisma migrate dev --name init && yarn prisma generate'
 
 dash_generate:
 	docker-compose run --rm dash_back yarn prisma generate

@@ -47,13 +47,15 @@ export class AuthController {
   @Post('register')
   async register(
     @Body() body: UserRegistrationDto,
-  ): Promise<Pick<User, 'id' | 'username' | 'email'>> {
+  ): Promise<Omit<User, 'password' | 'created_at' | 'updated_at'>> {
     return this.authService.register(body);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async me(@UserDec() user): Promise<Pick<User, 'id' | 'username' | 'email'>> {
-    return user;
+  async me(
+    @UserDec() user,
+  ): Promise<Omit<User, 'password' | 'created_at' | 'updated_at'>> {
+    return user as Omit<User, 'password' | 'created_at' | 'updated_at'>;
   }
 }

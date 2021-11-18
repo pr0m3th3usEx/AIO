@@ -15,7 +15,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   async validate(
     email: string,
     password: string,
-  ): Promise<Pick<User, 'id' | 'username' | 'email'>> {
+  ): Promise<Omit<User, 'password' | 'created_at' | 'updated_at'>> {
     const user = this.authService.validateUser(email, password);
 
     if (!user) {

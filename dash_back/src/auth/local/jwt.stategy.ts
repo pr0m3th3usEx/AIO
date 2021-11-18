@@ -17,7 +17,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(
     payload: JwtPayload,
-  ): Promise<Pick<User, 'id' | 'username' | 'email'>> {
+  ): Promise<
+    Omit<User, 'is_admin' | 'password' | 'created_at' | 'updated_at'>
+  > {
     return {
       id: payload.id,
       username: payload.username,

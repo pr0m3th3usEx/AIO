@@ -12,7 +12,7 @@ import { JWT_SECRET } from 'src/config';
     PrismaModule,
     JwtModule.register({
       secret: JWT_SECRET,
-      signOptions: { expiresIn: '120s' },
+      signOptions: { expiresIn: '1h' },
     }),
   ],
   controllers: [AuthController],

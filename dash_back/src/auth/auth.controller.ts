@@ -45,17 +45,7 @@ export class AuthController {
 
   @HttpCode(201)
   @Post('register')
-  async register(
-    @Body() body: UserRegistrationDto,
-  ): Promise<Omit<User, 'password' | 'created_at' | 'updated_at'>> {
+  async register(@Body() body: UserRegistrationDto): Promise<AccessToken> {
     return this.authService.register(body);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('me')
-  async me(
-    @UserDec() user,
-  ): Promise<Omit<User, 'password' | 'created_at' | 'updated_at'>> {
-    return user as Omit<User, 'password' | 'created_at' | 'updated_at'>;
   }
 }

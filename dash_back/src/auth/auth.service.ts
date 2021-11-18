@@ -8,11 +8,13 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserRegistrationDto } from './auth.controller';
 import * as bcrypt from 'bcrypt';
+import { CleanedUser } from 'src/user/user.dto';
 
 export type JwtPayload = {
   id: string;
   username: string;
   email: string;
+  is_admin: boolean;
 };
 
 export type AccessToken = {
@@ -42,9 +44,7 @@ export class AuthService {
     return undefined;
   }
 
-  async register(
-    dto: UserRegistrationDto,
-  ): Promise<Omit<User, 'password' | 'created_at' | 'updated_at'>> {
+  async register(dto: UserRegistrationDto): Promise<AccessToken> {
     const password = await bcrypt.hash(dto.password, 10);
 
     try {
@@ -57,19 +57,27 @@ export class AuthService {
         },
       });
 
-      return user;
+      const payload: JwtPayload = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        is_admin: user.is_admin,
+      };
+
+      return {
+        access_token: this.jwtService.sign(payload),
+      };
     } catch (err) {
       throw new BadRequestException('User already exists');
     }
   }
 
-  async login(
-    user: Omit<User, 'is_admin' | 'password' | 'created_at' | 'updated_at'>,
-  ): Promise<AccessToken> {
+  async login(user: User): Promise<AccessToken> {
     const payload: JwtPayload = {
       id: user.id,
       username: user.username,
       email: user.email,
+      is_admin: user.is_admin,
     };
 
     return {

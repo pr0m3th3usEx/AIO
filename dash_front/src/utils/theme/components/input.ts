@@ -36,6 +36,17 @@ const Input = {
         },
       },
     },
+    light: {
+      field: {
+        color: '#000',
+        border: '3px solid #CCC !important',
+        borderRadius: '8px',
+        background: 'white',
+        _placeholder: {
+          color: '#CCCCCC',
+        },
+      },
+    },
   },
   defaultProps: {
     size: 'md',

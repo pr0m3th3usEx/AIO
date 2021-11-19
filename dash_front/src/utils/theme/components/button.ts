@@ -30,6 +30,10 @@ const Button = {
       background: '#C4FFF9',
       color: '#07BEB8',
     },
+    light: {
+      background: '#68D8D6',
+      color: '#FFFFFF',
+    },
     outlined: {
       border: '1px solid #303030',
       color: '#303030',

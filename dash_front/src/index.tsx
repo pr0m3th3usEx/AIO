@@ -5,12 +5,15 @@ import App from 'app/App';
 import theme from 'utils/theme';
 import '@fontsource/titillium-web';
 import { Provider } from 'react-redux';
-import store from 'utils/store';
+import { persistor, store } from 'utils/store';
+import { PersistGate } from 'redux-persist/integration/react';
 
 ReactDOM.render(
   <ChakraProvider theme={theme}>
     <Provider store={store}>
-      <App />
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+      </PersistGate>
     </Provider>
   </ChakraProvider>,
   document.getElementById('root'),

@@ -4,8 +4,12 @@ import { Match } from 'utils/validation/match.decorator';
 import { Box, Center, HStack, Text, VStack } from '@chakra-ui/layout';
 import { Input, Button, useToast } from '@chakra-ui/react';
 import { FC, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { RegistrationUserDto, useRegisterMutation } from 'services/user';
+import { setToken } from 'store/auth.slice';
+import { useAppDispatch } from 'utils/hooks';
+import { setUser } from 'store/user.slice';
 
 class UserRegistrationFields {
   @Length(4, 30, {
@@ -30,6 +34,11 @@ class UserRegistrationFields {
 const resolver = classValidatorResolver(UserRegistrationFields);
 
 const Register: FC = (): JSX.Element => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const [runRegistration, { data, isLoading, isError, isSuccess, error }] =
+    useRegisterMutation();
   const {
     handleSubmit,
     register,
@@ -39,7 +48,14 @@ const Register: FC = (): JSX.Element => {
   const toast = useToast();
 
   const onSubmit = handleSubmit((data: UserRegistrationFields) => {
-    console.log(data);
+    const dto: RegistrationUserDto = {
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      rePassword: data.rePassword,
+    };
+
+    runRegistration(dto);
   });
 
   useEffect(() => {
@@ -61,6 +77,27 @@ const Register: FC = (): JSX.Element => {
       });
     }
   }, [errors, toast]);
+
+  useEffect(() => {
+    if (!isLoading && isError && error) {
+      toast({
+        title: "Couldn't register the user",
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  }, [isLoading, isError, error, toast]);
+
+  useEffect(() => {
+    if (!isLoading && isSuccess && data) {
+      const { access_token: token, user } = data;
+      localStorage.setItem('token', token);
+      dispatch(setToken(token));
+      dispatch(setUser(user));
+      window.location.href = '/';
+    }
+  }, [dispatch, navigate, isLoading, data, isSuccess]);
 
   return (
     <Center minH="80vh" overflowX="hidden">
@@ -96,16 +133,16 @@ const Register: FC = (): JSX.Element => {
               {...register('rePassword', { required: true })}
             />
             <HStack justifyContent="space-between" width="100%">
+              <Button fontWeight="bold" type="submit">
+                Sign up
+              </Button>
               <Box>
-                <Link to="/auth/login">
+                <Link to="/auth/login" reloadDocument>
                   <Text _hover={{ fontDecoration: 'underline' }}>
                     Already registered ? Connect to your dashboard now !
                   </Text>
                 </Link>
               </Box>
-              <Button fontWeight="bold" type="submit">
-                Sign up
-              </Button>
             </HStack>
           </VStack>
         </form>

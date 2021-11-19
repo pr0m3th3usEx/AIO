@@ -23,10 +23,10 @@ services:
     volumes:
       - "./dash_back:/app"
     ports:
-      - "8080:8080"
+      - "5555:5555"
 
   dash_front:
-    container_name: dash_front
+    container_name: d ash_front
     image: node:14-alpine
     working_dir: /app
     command: yarn start

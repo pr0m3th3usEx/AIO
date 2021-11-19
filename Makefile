@@ -20,7 +20,7 @@ install:
 dash_db:
 	docker-compose up dash_db
 
-dash_back:
+dashboard_back:
 	docker-compose up dash_back
 
 dash_studio:

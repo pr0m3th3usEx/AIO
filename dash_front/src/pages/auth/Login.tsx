@@ -2,11 +2,14 @@ import { Box, Text, VStack, HStack } from '@chakra-ui/layout';
 import { Button, Input, useToast } from '@chakra-ui/react';
 import { Center } from '@chakra-ui/react';
 import { FC, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { IsEmail, MinLength } from 'class-validator';
 import { useForm } from 'react-hook-form';
-
+import { LoginUserDto, useLoginMutation } from 'services/user';
+import { useAppDispatch } from 'utils/hooks';
+import { setToken } from 'store/auth.slice';
+import { setUser } from 'store/user.slice';
 class UserLoginField {
   @IsEmail({}, { message: 'E-mail format is not valid' })
   email: string;
@@ -20,11 +23,16 @@ class UserLoginField {
 const resolver = classValidatorResolver(UserLoginField);
 
 const Login: FC = (): JSX.Element => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm<UserLoginField>({ resolver });
+
+  const [runLogin, { data, isLoading, isSuccess, isError, error }] =
+    useLoginMutation();
 
   const toast = useToast();
 
@@ -42,8 +50,33 @@ const Login: FC = (): JSX.Element => {
     }
   }, [errors, toast]);
 
+  useEffect(() => {
+    if (!isLoading && isError && error) {
+      toast({
+        title: 'Email or password incorrect',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  }, [isLoading, isError, error, toast]);
+
+  useEffect(() => {
+    if (!isLoading && isSuccess && data) {
+      const { access_token: token, user } = data;
+      localStorage.setItem('token', token);
+      dispatch(setToken(token));
+      dispatch(setUser(user));
+      window.location.href = '/';
+    }
+  }, [dispatch, navigate, isLoading, data, isSuccess]);
+
   const onSubmit = handleSubmit((data: UserLoginField) => {
-    console.log(data);
+    const dto: LoginUserDto = {
+      email: data.email,
+      password: data.password,
+    };
+    runLogin(dto);
   });
 
   return (
@@ -65,16 +98,16 @@ const Login: FC = (): JSX.Element => {
               {...register('password', { required: true })}
             />
             <HStack justifyContent="space-between" width="100%">
-              <Link to="/auth/register">
+              <Button fontWeight="bold" type="submit" isLoading={isLoading}>
+                Log in
+              </Button>
+              <Link to="/auth/register" reloadDocument>
                 <Box>
                   <Text _hover={{ fontDecoration: 'underline' }}>
-                    Not registered ? Create an account now !
+                    Not registered ? Create an account now !<br />
                   </Text>
                 </Box>
               </Link>
-              <Button fontWeight="bold" type="submit">
-                Log in
-              </Button>
             </HStack>
           </VStack>
         </form>

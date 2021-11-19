@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserRegistrationDto } from './auth.controller';
 import * as bcrypt from 'bcrypt';
 import { CleanedUser } from 'src/user/user.dto';
+import { UserService } from 'src/user/user.service';
 
 export type JwtPayload = {
   id: string;
@@ -19,11 +20,16 @@ export type JwtPayload = {
 
 export type AccessToken = {
   access_token: string;
+  user: CleanedUser;
 };
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService, private jwtService: JwtService) {}
+  constructor(
+    private prisma: PrismaService,
+    private jwtService: JwtService,
+    private userService: UserService,
+  ) {}
 
   async validateUser(
     email: string,
@@ -66,6 +72,7 @@ export class AuthService {
 
       return {
         access_token: this.jwtService.sign(payload),
+        user: this.userService.cleanUser(user),
       };
     } catch (err) {
       throw new BadRequestException('User already exists');
@@ -82,6 +89,7 @@ export class AuthService {
 
     return {
       access_token: this.jwtService.sign(payload),
+      user: this.userService.cleanUser(user),
     };
   }
 }

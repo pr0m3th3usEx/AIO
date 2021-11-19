@@ -1,7 +1,7 @@
 import { Image } from '@chakra-ui/image';
 import { HStack, VStack, Text, Box } from '@chakra-ui/layout';
 import UnknownProfileImage from 'assets/UnknownProfileImage.jpg';
-import { createRef, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const NavigationMenu = (): JSX.Element => {
@@ -66,7 +66,7 @@ const NavBar = (): JSX.Element => {
       py="12px"
       justifyContent="space-between"
     >
-      <Link to="/dashboard">
+      <Link to="/dashboard" reloadDocument>
         <Text fontWeight="bold" fontSize="24px">
           Dashboard
         </Text>

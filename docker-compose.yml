@@ -26,7 +26,7 @@ services:
       - "5555:5555"
 
   dash_front:
-    container_name: d ash_front
+    container_name: dash_front
     image: node:14-alpine
     working_dir: /app
     command: yarn start

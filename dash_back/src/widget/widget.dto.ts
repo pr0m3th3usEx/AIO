@@ -11,8 +11,6 @@ export class CreateWidgetDto {
   @IsEnum(WidgetType, { message: 'Invalid type of widget' })
   type: WidgetType;
   @IsUUID()
-  user_id: string;
-  @IsUUID()
   service_id: string;
   @IsPositive()
   refresh_rate: number;

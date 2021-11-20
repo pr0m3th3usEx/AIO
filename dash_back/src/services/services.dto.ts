@@ -18,7 +18,7 @@ export class UpsertServiceDto {
   @IsString()
   @IsOptional()
   id?: string;
-  @IsEnum(ServiceType)
+  @IsEnum(ServiceType, { message: 'Unkwown service' })
   serviceType: ServiceType;
   @IsBoolean()
   activated: boolean;

@@ -23,7 +23,7 @@ services:
     volumes:
       - "./dash_back:/app"
     ports:
-      - "5555:5555"
+      - "8080:8080"
 
   dash_front:
     container_name: dash_front

@@ -32,10 +32,20 @@ export class ServiceProvider {
     if (selectedService.length !== 1) {
       throw new BadRequestException('Unknown service');
     }
+    const existing = await this.prisma.service.findFirst({
+      where: {
+        user_id,
+        type: dto.serviceType,
+      },
+    });
+
+    if (dto.id && dto.id !== existing.id) {
+      throw new BadRequestException('Service not related to this user');
+    }
 
     return this.prisma.service.upsert({
       where: {
-        id: dto.id ?? "",
+        id: dto.id ?? existing.id ?? '',
       },
       update: {
         is_activated: dto.activated,

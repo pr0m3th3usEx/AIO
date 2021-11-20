@@ -17,3 +17,14 @@ export class CreateWidgetDto {
   @IsArray({ message: 'parameters must be an array' })
   parameters: WidgetParameterDto[];
 }
+
+export class WidgetParameterConfiguration {
+  name: string;
+  type: 'string' | 'integer';
+}
+
+export class WidgetConfiguration {
+  name: string;
+  description: string;
+  params: WidgetParameterConfiguration[];
+}

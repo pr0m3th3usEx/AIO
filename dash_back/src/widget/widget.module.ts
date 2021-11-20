@@ -3,7 +3,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from 'src/auth/local/jwt.stategy';
 import { JWT_SECRET } from 'src/config';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { ServiceModule } from 'src/services/service.module';
 import { UserModule } from 'src/user/user.module';
 import { WidgetController } from './widget.controller';
 import { WidgetService } from './widget.service';
@@ -17,7 +16,7 @@ import { WidgetService } from './widget.service';
     }),
     UserModule,
   ],
-  controllers: [WidgetController, ServiceModule],
+  controllers: [WidgetController],
   providers: [WidgetService, JwtStrategy],
   exports: [WidgetService],
 })

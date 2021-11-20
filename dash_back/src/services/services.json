@@ -1,0 +1,38 @@
+[
+  {
+    "name": "WEATHER",
+    "oauth2": false,
+    "widgets": [
+      {
+        "name": "city_temperature",
+        "description": "Display temperature for a city",
+        "params": [
+          {
+            "name": "City",
+            "type": "string"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "GOOGLE",
+    "oauth2": false,
+    "widgets": [
+      {
+        "name": "translate",
+        "description": "Translator from a language to another",
+        "params": [
+          {
+            "name": "Source",
+            "type": "string"
+          },
+          {
+            "name": "Destination",
+            "type": "string"
+          }
+        ]
+      }
+    ]
+  }
+]

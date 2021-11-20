@@ -6,7 +6,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { UserModule } from 'src/user/user.module';
 import { WidgetModule } from 'src/widget/widget.module';
 import { ServiceController } from './service.controller';
-import { ServicesService } from './service.service';
+import { ServiceProvider } from './service.service';
 
 @Module({
   imports: [
@@ -18,8 +18,8 @@ import { ServicesService } from './service.service';
     }),
     WidgetModule,
   ],
-  providers: [ServicesService, JwtStrategy],
+  providers: [ServiceProvider, JwtStrategy],
   controllers: [ServiceController],
-  exports: [ServicesService],
+  exports: [ServiceProvider],
 })
 export class ServiceModule {}

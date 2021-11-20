@@ -27,7 +27,7 @@ export class AppController {
         host: ip,
       },
       server: {
-        current_time: 0,
+        current_time: Date.now(),
         services: <ServiceConfiguration[]>AVAILABLE_SERVICES.map((service) => ({
           name: service.name,
           widgets: service.widgets,

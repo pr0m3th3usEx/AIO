@@ -26,7 +26,7 @@ export class WidgetController {
   async createWidget(
     @UserDec() user: CleanedUser,
     @Body() body: CreateWidgetDto,
-  ): Promise<Widget | string> {
+  ): Promise<Widget> {
     return this.widgetService.createWidget(user.id, body);
   }
 
@@ -35,25 +35,19 @@ export class WidgetController {
   async getAllWidgets(
     @UserDec() user: CleanedUser,
   ): Promise<Widget[] | string> {
-    return 'get all widgets';
+    return this.widgetService.getAllUserWidgets(user.id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('/:id')
-  async getWidgetInfo(
-    @UserDec() user: CleanedUser,
-    @Param('id') widgetId: string,
-  ): Promise<Widget | string> {
-    return 'get widget';
+  async getWidgetInfo(@Param('id') widgetId: string): Promise<Widget> {
+    return this.widgetService.getWidgetDetails(widgetId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')
-  async deleteWidget(
-    @UserDec() user: CleanedUser,
-    @Param('id') widgetId: string,
-  ): Promise<boolean> {
-    return true;
+  async deleteWidget(@Param('id') widgetId: string): Promise<boolean> {
+    return this.widgetService.destroyWidget(widgetId);
   }
 
   @UseGuards(JwtAuthGuard)

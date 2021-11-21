@@ -1,8 +1,8 @@
 export type ParameterType = 'INTEGER' | 'STRING';
 
 export type WidgetType =
-  | 'GOOGLE'
-  | 'WEATHER'
+  | 'TRANSLATOR'
+  | 'CITY_TEMPERATURE'
   | 'CRYPTO'
   | 'INTRA'
   | 'TWITTER'

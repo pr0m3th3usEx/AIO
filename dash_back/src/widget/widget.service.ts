@@ -5,7 +5,11 @@ import {
   Widget,
   WidgetType,
 } from '.prisma/client';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ServiceConfiguration } from 'src/services/services.dto';
 import { CleanedUser } from 'src/user/user.dto';
@@ -73,10 +77,7 @@ export class WidgetService {
     );
   }
 
-  async createWidget(
-    user_id: string,
-    dto: CreateWidgetDto,
-  ): Promise<Widget | string> {
+  async createWidget(user_id: string, dto: CreateWidgetDto): Promise<Widget> {
     try {
       const service = await this.prisma.service.findUnique({
         where: {
@@ -144,4 +145,63 @@ export class WidgetService {
       throw err;
     }
   }
+
+  async getAllUserWidgets(user_id: string): Promise<Widget[]> {
+    return await this.prisma.widget.findMany({
+      where: {
+        user_id,
+      },
+      include: {
+        parameters: true,
+      },
+    });
+  }
+
+  async getWidgetDetails(widget_id: string): Promise<Widget> {
+    try {
+      return await this.prisma.widget.findUnique({
+        where: {
+          id: widget_id,
+        },
+        include: {
+          parameters: true,
+        },
+      });
+    } catch (err) {
+      throw new NotFoundException();
+    }
+  }
+
+  async destroyWidget(widget_id: string): Promise<boolean> {
+    try {
+      const deleteWidget = this.prisma.widget.delete({
+        where: {
+          id: widget_id,
+        },
+      });
+
+      const deleteWidgetParameters = this.prisma.widgetParameter.deleteMany({
+        where: {
+          widget_id: widget_id,
+        },
+      });
+
+      const transaction = await this.prisma.$transaction([
+        deleteWidget,
+        deleteWidgetParameters,
+      ]);
+
+      return true;
+    } catch (err) {
+      throw new NotFoundException();
+    }
+  }
+
+  // async updateWidget(widget_id: string, params: UpdateWidgetParameterDto): Promise<Widget> {
+  //   try {
+
+  //   } catch (err) {
+  //     if ()
+  //   }
+  // }
 }

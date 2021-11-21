@@ -5,6 +5,7 @@
     "widgets": [
       {
         "name": "city_temperature",
+        "type": "CITY_TEMPERATURE",
         "description": "Display temperature for a city",
         "params": [
           {
@@ -17,10 +18,11 @@
   },
   {
     "name": "GOOGLE",
-    "oauth2": false,
+    "oauth2": true,
     "widgets": [
       {
-        "name": "translate",
+        "name": "translator",
+        "type": "TRANSLATOR",
         "description": "Translator from a language to another",
         "params": [
           {

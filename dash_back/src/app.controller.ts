@@ -2,7 +2,7 @@ import { Controller, Get, Request } from '@nestjs/common';
 import { ServiceConfiguration } from './services/services.dto';
 import AVAILABLE_SERVICES from './services/services.json';
 import { IpAddr } from './utils/ip.decorator';
-import { WidgetConfiguration } from './widget/widget.dto';
+import { WidgetParameterConfiguration } from './widget/widget.dto';
 
 type About = {
   client: {
@@ -12,7 +12,11 @@ type About = {
     current_time: number;
     services: {
       name: string;
-      widgets: WidgetConfiguration[];
+      widgets: {
+        name: string;
+        description: string;
+        params: WidgetParameterConfiguration[];
+      }[];
     }[];
   };
 };
@@ -30,7 +34,11 @@ export class AppController {
         current_time: Date.now(),
         services: <ServiceConfiguration[]>AVAILABLE_SERVICES.map((service) => ({
           name: service.name,
-          widgets: service.widgets,
+          widgets: service.widgets.map((widgets) => ({
+            name: widgets.name,
+            description: widgets.description,
+            params: widgets.params,
+          })),
         })),
       },
     };

@@ -20,8 +20,8 @@ enum ServiceType {
 }
 
 enum WidgetType {
-  GOOGLE
-  WEATHER
+  TRANSLATOR
+  CITY_TEMPERATURE
   CRYPTO
   INTRA
   TWITTER
@@ -76,6 +76,7 @@ model WidgetParameter {
   id            String                  @id @default(uuid())
   widget        Widget                  @relation(fields: [widget_id], references: [id])
   widget_id     String
+  name          String
   type          ParameterType
   value_int     Int?
   value_string  String?

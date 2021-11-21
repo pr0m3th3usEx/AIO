@@ -45,7 +45,7 @@ export class ServiceProvider {
 
     return this.prisma.service.upsert({
       where: {
-        id: dto.id ?? existing.id ?? '',
+        id: dto.id ?? existing?.id ?? '',
       },
       update: {
         is_activated: dto.activated,

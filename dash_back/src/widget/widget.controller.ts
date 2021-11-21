@@ -16,7 +16,7 @@ import { UserDec } from 'src/utils/user.decorator';
 import { CreateWidgetDto } from './widget.dto';
 import { WidgetService } from './widget.service';
 
-@Controller('widget')
+@Controller('api/widgets')
 export class WidgetController {
   constructor(private widgetService: WidgetService) {}
 

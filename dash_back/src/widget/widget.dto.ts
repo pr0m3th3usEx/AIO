@@ -1,5 +1,12 @@
 import { Widget, WidgetType } from '.prisma/client';
-import { IsArray, IsEnum, IsPositive, IsString, IsUUID } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsInt,
+  IsPositive,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class WidgetParameterDto {
   @IsString()
@@ -12,9 +19,10 @@ export class CreateWidgetDto {
   type: WidgetType;
   @IsUUID()
   service_id: string;
-  @IsPositive()
+  @IsInt({ message: 'Refresh rate must be positive' })
+  @IsPositive({ message: 'Refresh rate must be positive' })
   refresh_rate: number;
-  @IsArray({ message: 'parameters must be an array' })
+  @IsArray({ message: 'Parameters must be an array' })
   parameters: WidgetParameterDto[];
 }
 
@@ -25,6 +33,7 @@ export class WidgetParameterConfiguration {
 
 export class WidgetConfiguration {
   name: string;
+  type: WidgetType;
   description: string;
   params: WidgetParameterConfiguration[];
 }

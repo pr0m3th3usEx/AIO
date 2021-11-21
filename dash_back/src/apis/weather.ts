@@ -19,6 +19,18 @@ class Weather
         .catch(error => console.log(error));
     };
 
+
+    /*
+    **  Return array:
+    **
+    **  [
+    **      {
+    **          weather,
+    **          temp
+    **      },
+    **      ...
+    **  ]
+    */
     public get_weather = () => {
         return this.get(this.lat, this.lon).then(js => {
             let next_weather = [];
@@ -26,7 +38,6 @@ class Weather
             js['dataseries'].forEach(element => {
                 let buffer = {'weather': '', 'temp': 0};
 
-                console.log(element);
                 if (element['prec_type'] == 'none') {
                     if (element['cloudcover'] < 3) {
                         buffer['weather'] = 'clear';
@@ -54,6 +65,4 @@ class Weather
     };
 }
 
-const weather = new Weather();
-
-weather.get_weather().then(precipitation => console.log(precipitation));
+export default Weather;

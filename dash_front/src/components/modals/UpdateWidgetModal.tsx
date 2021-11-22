@@ -1,6 +1,6 @@
 import { Button } from '@chakra-ui/button';
 import { Input } from '@chakra-ui/input';
-import { Box, HStack, Text, VStack } from '@chakra-ui/layout';
+import { HStack, Text, VStack } from '@chakra-ui/layout';
 import { useBreakpointValue } from '@chakra-ui/media-query';
 import {
   Modal,
@@ -10,7 +10,6 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '@chakra-ui/modal';
-import { Select } from '@chakra-ui/select';
 import LabelWrapperInput from 'components/inputs/LabelWrapperInput';
 
 interface ModalProps {
@@ -19,7 +18,7 @@ interface ModalProps {
   isOpen: boolean;
 }
 
-const CreateWidgetModal = ({ onCancel, onSubmit, isOpen }: ModalProps) => {
+const UpdateWidgetModal = ({ onCancel, onSubmit, isOpen }: ModalProps) => {
   const size = useBreakpointValue({ sm: 'SM', md: 'md' });
 
   const onFormSubmit = () => {};
@@ -30,36 +29,13 @@ const CreateWidgetModal = ({ onCancel, onSubmit, isOpen }: ModalProps) => {
       <ModalContent bg="white">
         <ModalHeader>
           <Text color="black" fontSize="18px">
-            ADD WIDGET
+            CONFIGURE WIDGET
           </Text>
         </ModalHeader>
         <ModalCloseButton color="black" />
         <ModalBody pt="32px" pb="32px">
           <form onSubmit={onFormSubmit} style={{ width: '100%' }}>
             <VStack spacing="32px" align="start">
-              <LabelWrapperInput label="Select service">
-                <Select placeholder="..." variant="primary">
-                  <option>Test 1</option>
-                  <option>Test 2</option>
-                  <option>Test 3</option>
-                  <option>Test 4</option>
-                  <option>Test 5</option>
-                </Select>
-              </LabelWrapperInput>
-
-              <LabelWrapperInput label="Select widget">
-                <Select placeholder="..." variant="primary">
-                  <option>Test 1</option>
-                  <option>Test 2</option>
-                  <option>Test 3</option>
-                  <option>Test 4</option>
-                  <option>Test 5</option>
-                </Select>
-              </LabelWrapperInput>
-              <Text color="black" fontSize="18px">
-                Set up your widget
-              </Text>
-
               <LabelWrapperInput label="Refresh Rate">
                 <Input
                   type="number"
@@ -81,7 +57,7 @@ const CreateWidgetModal = ({ onCancel, onSubmit, isOpen }: ModalProps) => {
                   CANCEL
                 </Button>
                 <Button variant="light" type="submit">
-                  ADD
+                  SAVE
                 </Button>
               </HStack>
             </VStack>
@@ -92,4 +68,4 @@ const CreateWidgetModal = ({ onCancel, onSubmit, isOpen }: ModalProps) => {
   );
 };
 
-export default CreateWidgetModal;
+export default UpdateWidgetModal;

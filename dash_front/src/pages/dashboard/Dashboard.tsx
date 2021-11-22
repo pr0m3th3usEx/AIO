@@ -1,24 +1,41 @@
 import { Button } from '@chakra-ui/button';
 import { Box, HStack, Text, VStack } from '@chakra-ui/layout';
 import CreateWidgetModal from 'components/modals/CreateWidgetModal';
+import UpdateWidgetModal from 'components/modals/UpdateWidgetModal';
 import { FC, useState } from 'react';
+import { Widget } from 'services/widget';
 import { useAppSelector } from 'utils/hooks';
 
 const Dashboard: FC = (): JSX.Element => {
   const user = useAppSelector((state) => state.user);
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [addModalOpen, setAddModalOpen] = useState<boolean>(false);
+  const [updateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
 
   const openCreateWidgetModal = () => {
-    setModalOpen(true);
+    setAddModalOpen(true);
+  };
+
+  const openUpdateWidgetModal = () => {
+    setUpdateModalOpen(true);
   };
 
   return (
     <VStack w="100%" align="start">
-      {modalOpen && (
+      {addModalOpen && (
         <CreateWidgetModal
-          onCancel={() => setModalOpen(false)}
+          onCancel={() => setAddModalOpen(false)}
           onSubmit={(data) => {}}
-          isOpen={modalOpen}
+          isOpen={addModalOpen}
+        />
+      )}
+
+      {updateModalOpen && (
+        <UpdateWidgetModal
+          onCancel={() => {
+            setUpdateModalOpen(false);
+          }}
+          onSubmit={(data) => {}}
+          isOpen={updateModalOpen}
         />
       )}
 

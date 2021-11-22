@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthModule } from 'src/auth/auth.module';
 import { JwtStrategy } from 'src/auth/local/jwt.stategy';
 import { JWT_SECRET } from 'src/config';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
+import { UserModule } from 'src/user/user.module';
+import { WidgetController } from './widget.controller';
+import { WidgetService } from './widget.service';
 
 @Module({
   imports: [
@@ -15,9 +14,10 @@ import { UserService } from './user.service';
       secret: JWT_SECRET,
       signOptions: { expiresIn: '1h' },
     }),
+    UserModule,
   ],
-  providers: [UserService, JwtStrategy],
-  controllers: [UserController],
-  exports: [UserService],
+  controllers: [WidgetController],
+  providers: [WidgetService, JwtStrategy],
+  exports: [WidgetService],
 })
-export class UserModule {}
+export class WidgetModule {}

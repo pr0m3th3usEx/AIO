@@ -7,7 +7,7 @@ import { CleanedUser } from './user.dto';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async cleanUser(user: User): Promise<CleanedUser> {
+  cleanUser(user: User): CleanedUser {
     const { password, ...cleanUser } = user;
 
     return cleanUser;

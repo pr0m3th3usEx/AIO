@@ -25,57 +25,6 @@ const CreateWidgetModal = ({ onCancel, onSubmit, isOpen }: ModalProps) => {
   const onFormSubmit = () => {};
 
   return (
-    // <Box
-    //   pos="fixed"
-    //   w="100%"
-    //   h="100%"
-    //   bg="#404040a0"
-    //   top="0"
-    //   left="0"
-    //   zIndex="10"
-    //   onClick={onCancel}
-    // >
-    //   <Box pos="relative" w="100%" h="100%">
-    //     <VStack
-    //       w="35%"
-    //       padding="25px"
-    //       pos="absolute"
-    //       top="50%"
-    //       left="50%"
-    //       bg="white"
-    //       borderRadius="12px"
-    //       transform="translate(-50%, -50%)"
-    //       align="start"
-    //       spacing="32px"
-    //     >
-    //       <Text color="black" fontSize="22px" fontWeight="bold">
-    //         ADD WIDGET
-    //       </Text>
-
-    //       <form onSubmit={onFormSubmit} style={{ width: '100%' }}>
-    //         <VStack align="start" w="100%"></VStack>
-
-    //         <LabelWrapperInput label="Select service">
-    //           <Select placeholder="...">
-    //             <option>Test</option>
-    //           </Select>
-    //         </LabelWrapperInput>
-
-    //         <HStack
-    //           w="100%"
-    //           justifyContent="flex-end"
-    //           alignItems="center"
-    //           spacing="24px"
-    //         >
-    //           <Button variant="link">CANCEL</Button>
-    //           <Button variant="light" type="submit">
-    //             ADD
-    //           </Button>
-    //         </HStack>
-    //       </form>
-    //     </VStack>
-    //   </Box>
-    // </Box>
     <Modal isOpen={isOpen} onClose={onCancel}>
       <ModalOverlay />
       <ModalContent bg="white">

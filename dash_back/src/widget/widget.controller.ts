@@ -13,7 +13,7 @@ import {
 import { JwtAuthGuard } from 'src/auth/local/jwt-auth.guard';
 import { CleanedUser } from 'src/user/user.dto';
 import { UserDec } from 'src/utils/user.decorator';
-import { CreateWidgetDto } from './widget.dto';
+import { CreateWidgetDto, UpdateWidgetParameterDto } from './widget.dto';
 import { WidgetService } from './widget.service';
 
 @Controller('api/widgets')
@@ -55,7 +55,8 @@ export class WidgetController {
   async updateWidget(
     @UserDec() user: CleanedUser,
     @Param('id') widgetId: string,
+    @Body() parameters: UpdateWidgetParameterDto,
   ): Promise<Widget | string> {
-    return 'update widget';
+    return this.widgetService.updateWidget(widgetId, parameters);
   }
 }

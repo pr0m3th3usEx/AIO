@@ -17,6 +17,7 @@ import { UserService } from 'src/user/user.service';
 import { UserDec } from 'src/utils/user.decorator';
 import {
   CreateWidgetDto,
+  UpdateWidgetParameterDto,
   WidgetConfiguration,
   WidgetParameterConfiguration,
   WidgetParameterDto,
@@ -197,11 +198,66 @@ export class WidgetService {
     }
   }
 
-  // async updateWidget(widget_id: string, params: UpdateWidgetParameterDto): Promise<Widget> {
-  //   try {
+  async updateWidget(
+    widget_id: string,
+    params: UpdateWidgetParameterDto,
+  ): Promise<Widget> {
+    try {
+      const widget = await this.prisma.widget.findUnique({
+        where: { id: widget_id },
+        include: {
+          service: true,
+        },
+      });
 
-  //   } catch (err) {
-  //     if ()
-  //   }
-  // }
+      await this.prisma.widgetParameter.deleteMany({
+        where: {
+          widget_id,
+        },
+      });
+      const widgetParameter = this.isWidgetRelatedToService(
+        widget.service.type,
+        widget.type,
+      );
+
+      if (!this.areValidParams(params.parameters, widgetParameter.params)) {
+        throw new BadRequestException('Invalid parameters');
+      }
+
+      await this.prisma.widgetParameter.createMany({
+        data: params.parameters.map((param) => {
+          const paramType =
+            typeof param.value === 'number'
+              ? ParameterType.INTEGER
+              : ParameterType.STRING;
+          const payload = { widget_id, type: paramType };
+
+          if (paramType === ParameterType.INTEGER) {
+            return {
+              name: param.name,
+              value_int: param.value as number,
+              ...payload,
+            };
+          } else {
+            return {
+              name: param.name,
+              value_string: param.value as string,
+              ...payload,
+            };
+          }
+        }),
+      });
+
+      return await this.prisma.widget.findUnique({
+        where: { id: widget_id },
+        include: {
+          parameters: true,
+        },
+      });
+    } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new NotFoundException('Widget not found');
+      }
+    }
+  }
 }

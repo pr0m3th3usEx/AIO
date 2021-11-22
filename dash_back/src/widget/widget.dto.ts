@@ -26,6 +26,11 @@ export class CreateWidgetDto {
   parameters: WidgetParameterDto[];
 }
 
+export class UpdateWidgetParameterDto {
+  @IsArray({ message: 'Parameters must be an array' })
+  parameters: WidgetParameterDto[];
+}
+
 export class WidgetParameterConfiguration {
   name: string;
   type: 'string' | 'integer';

@@ -1,8 +1,9 @@
 import { Service } from '.prisma/client';
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/local/jwt-auth.guard';
 import { CleanedUser } from 'src/user/user.dto';
 import { UserDec } from 'src/utils/user.decorator';
+import { WidgetConfiguration } from 'src/widget/widget.dto';
 import { ServiceProvider } from './service.service';
 import { ServiceAvailable, UpsertServiceDto } from './services.dto';
 
@@ -25,5 +26,13 @@ export class ServiceController {
     @Body() body: UpsertServiceDto,
   ): Promise<Service> {
     return this.serviceProvider.upsertService(user.id, body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/:type/widgets')
+  async getWidgetFromService(
+    @Param('type') type: string,
+  ): Promise<WidgetConfiguration[]> {
+    return this.serviceProvider.getWidgetFromService(type);
   }
 }

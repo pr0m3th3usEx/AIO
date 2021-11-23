@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
+import { WidgetConfiguration } from 'src/widget/widget.dto';
 import { WidgetService } from 'src/widget/widget.service';
 import {
   ServiceAvailable,
@@ -82,8 +83,20 @@ export class ServiceProvider {
     });
     services.forEach((service) => {
       reduced[service.type].isActivated = service.is_activated;
+      reduced[service.type].id = service.id;
     });
 
     return Object.values(reduced);
+  }
+
+  async getWidgetFromService(type: string): Promise<WidgetConfiguration[]> {
+    const selectedService = (<ServiceConfiguration[]>AVAILABLE_SERVICES).find(
+      (s) => s.name === type,
+    );
+
+    if (!selectedService) {
+      throw new NotFoundException('Service does not exist');
+    }
+    return selectedService.widgets;
   }
 }

@@ -9,6 +9,7 @@ import {
 import { WidgetConfiguration } from 'src/widget/widget.dto';
 
 export class ServiceAvailable {
+  id: string;
   name: ServiceType;
   oauth2: boolean;
   isActivated: boolean;

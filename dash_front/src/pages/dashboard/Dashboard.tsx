@@ -24,7 +24,9 @@ const Dashboard: FC = (): JSX.Element => {
       {addModalOpen && (
         <CreateWidgetModal
           onCancel={() => setAddModalOpen(false)}
-          onSubmit={(data) => {}}
+          onClose={() => {
+            setAddModalOpen(false);
+          }}
           isOpen={addModalOpen}
         />
       )}

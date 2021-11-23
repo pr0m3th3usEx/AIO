@@ -61,7 +61,8 @@ export class WidgetService {
     return (
       paramsGiven.filter((param) => {
         const paramChecker = pattern.find(
-          (validParam) => validParam.name === param.name,
+          (validParam) =>
+            validParam !== null && validParam?.name === param?.name,
         );
 
         if (!paramChecker) {

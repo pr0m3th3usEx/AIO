@@ -184,6 +184,7 @@ const ServiceActivator = ({
       h="24px"
     >
       <OAuthModal
+        serviceId={serviceId}
         serviceName={name}
         onCancel={() => setModalOpen(false)}
         onSuccess={() => setModalOpen(false)}

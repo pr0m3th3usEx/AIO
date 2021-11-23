@@ -15,6 +15,10 @@ export type RedditAccessToken = {
   scope: string;
 };
 
+export type RedditOAuthError = {
+  error: string;
+};
+
 @Injectable()
 export class RedditService {
   private OAUTH_URL = 'https://www.reddit.com/api/v1/authorize';
@@ -33,7 +37,9 @@ export class RedditService {
     }
 
     try {
-      const res = await this.instance.post<RedditAccessToken>(
+      const res = await this.instance.post<
+        RedditAccessToken | RedditOAuthError
+      >(
         '/v1/access_token',
         qs.stringify({
           grant_type: 'authorization_code',
@@ -50,13 +56,19 @@ export class RedditService {
           },
         },
       );
-      console.log(res.data);
+      if ('error' in res.data) {
+        throw new BadRequestException("Couldn't grant token from Reddit");
+      }
       return {
         access_token: res.data.access_token,
         refresh_token: res.data.refresh_token,
       };
     } catch (err) {
-      throw new UnauthorizedException("Couldn't receive tokens from Reddit");
+      throw err;
     }
+    return {
+      access_token: '',
+      refresh_token: '',
+    };
   }
 }

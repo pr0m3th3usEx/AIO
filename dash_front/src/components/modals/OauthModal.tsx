@@ -8,7 +8,12 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '@chakra-ui/modal';
-import { ServiceType } from 'services/service';
+import { useToast } from '@chakra-ui/toast';
+import { useEffect, useState } from 'react';
+import {
+  ServiceType,
+  useGetServiceAuthorizationUrlQuery,
+} from 'services/service';
 
 interface ModalProps {
   onSuccess: () => void;
@@ -16,6 +21,7 @@ interface ModalProps {
   onCancel: () => void;
   isOpen: boolean;
   serviceName: ServiceType;
+  serviceId: string | undefined;
 }
 
 const OAuthModal = ({
@@ -24,7 +30,38 @@ const OAuthModal = ({
   onCancel,
   isOpen,
   serviceName,
+  serviceId,
 }: ModalProps) => {
+  const [skipReq, setSkipReq] = useState<boolean>(true);
+  const [activationLoading, setActivationLoading] = useState<boolean>(false);
+  const toast = useToast();
+  const { data, isLoading, isSuccess, isError, error } =
+    useGetServiceAuthorizationUrlQuery(serviceName, {
+      skip: skipReq,
+    });
+
+  const connect = () => {
+    setActivationLoading(true);
+    localStorage.setItem('service', serviceName);
+    if (serviceId) {
+      localStorage.setItem('service_id', serviceId);
+    }
+    setSkipReq(false);
+  };
+
+  useEffect(() => {
+    if (!isLoading && isSuccess && data) {
+      window.location.href = data?.authorize_url;
+    } else if (isError) {
+      toast({
+        title: 'Error',
+        description: 'An error occured',
+        duration: 3000,
+        status: 'error',
+      });
+    }
+  }, [data, isLoading, isSuccess, isError, error, toast]);
+
   return (
     <Modal isOpen={isOpen} onClose={onCancel}>
       <ModalOverlay />
@@ -40,7 +77,13 @@ const OAuthModal = ({
             <Text color="black">
               Connect to your account to activate the service:
             </Text>
-            <Button variant="light" fontSize="18px" fontWeight="bold">
+            <Button
+              isLoading={activationLoading}
+              variant="light"
+              fontSize="18px"
+              fontWeight="bold"
+              onClick={() => connect()}
+            >
               Connect to {serviceName}
             </Button>
           </VStack>

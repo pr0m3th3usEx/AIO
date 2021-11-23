@@ -11,11 +11,90 @@ import {
 } from '@chakra-ui/layout';
 import { useBreakpointValue } from '@chakra-ui/media-query';
 import { Switch } from '@chakra-ui/switch';
+import { useToast } from '@chakra-ui/toast';
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import UnknownProfileImage from 'assets/UnknownProfileImage.jpg';
-import { FC } from 'react';
+import { MinLength } from 'class-validator';
+import { FC, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { PasswordChangeDto, useChangePasswordMutation } from 'services/user';
+import { useAppSelector } from 'utils/hooks';
+import { Match } from 'utils/validation/match.decorator';
+
+class ChangePasswordFields {
+  @MinLength(8, { message: 'Password is too short (min. 8 characters)\n' })
+  currentPassword: string;
+  @MinLength(8, { message: 'Password is too short (min. 8 characters)\n' })
+  newPassword: string;
+  @Match('newPassword', {
+    message: 'Password does not match\n',
+  })
+  confirmNewPassword: string;
+}
+
+const resolver = classValidatorResolver(ChangePasswordFields);
 
 const ProfileCard = (): JSX.Element => {
+  const { user } = useAppSelector((state) => state);
   const screenSize = useBreakpointValue({ base: 'SM', md: 'MD' }) || 'MD';
+  const toast = useToast();
+  const [changePassword, { data, isLoading, isSuccess, isError, error }] =
+    useChangePasswordMutation();
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors: fieldErrors },
+  } = useForm<ChangePasswordFields>({ resolver });
+  const onFormSubmit = (data: ChangePasswordFields) => {
+    const dto: PasswordChangeDto = {
+      oldPassword: data.currentPassword,
+      newPassword: data.newPassword,
+    };
+
+    changePassword(dto);
+  };
+
+  useEffect(() => {
+    if (Object.keys(fieldErrors).length > 0) {
+      toast({
+        title: 'Incorrect fields',
+        description: `
+          ${
+            fieldErrors.currentPassword?.message ||
+            fieldErrors.newPassword?.message ||
+            fieldErrors.confirmNewPassword?.message ||
+            ''
+          }
+        `,
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  }, [fieldErrors, toast]);
+
+  useEffect(() => {
+    if (!isLoading && isSuccess) {
+      reset();
+      toast({
+        title: 'Password changed',
+        status: 'success',
+        duration: 4000,
+        isClosable: true,
+      });
+    } else if (!isLoading && isError && error) {
+      console.log(error);
+      toast({
+        title: 'Error',
+        status: 'error',
+        description: "Couldn't change password! Try again!",
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  }, [reset, toast, isLoading, isSuccess, isError, error]);
 
   return (
     <VStack
@@ -30,9 +109,9 @@ const ProfileCard = (): JSX.Element => {
           w={{ base: '90px', md: '128px', lg: '160px' }}
         />
         <Text color="black" fontWeight="bold">
-          Username
+          {user.username}
         </Text>
-        <Text color="gray">Email</Text>
+        <Text color="gray">{user.email}</Text>
       </VStack>
 
       <VStack spacing="24px" align="start" w="100%">
@@ -40,22 +119,28 @@ const ProfileCard = (): JSX.Element => {
           Password settings
         </Text>
 
-        <form style={{ width: '100%' }}>
+        <form style={{ width: '100%' }} onSubmit={handleSubmit(onFormSubmit)}>
           <VStack spacing="12px" w="100%" align="start" variant="dark">
             <Input
               placeholder="Enter current password"
               variant="light"
               type="password"
+              {...register('currentPassword', { required: true })}
             />
             <Input
               placeholder="Enter new password"
               variant="light"
               type="password"
+              {...register('newPassword', { required: true })}
             />
             <Input
               placeholder="Confirm new password"
               variant="light"
               type="password"
+              {...register('confirmNewPassword', {
+                required: true,
+                minLength: 8,
+              })}
             />
             <Button type="submit" variant="light" fontWeight="bold">
               Save new password

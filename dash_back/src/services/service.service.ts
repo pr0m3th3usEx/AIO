@@ -4,12 +4,15 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { RedditService } from 'src/apis/reddit/reddit.service';
 import { FRONT_END_URL, REDDIT_APP_ID } from 'src/config';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { WidgetConfiguration } from 'src/widget/widget.dto';
 import { WidgetService } from 'src/widget/widget.service';
 import {
+  AuthorizationDtoUrl,
+  AuthorizationTokens,
   ServiceAvailable,
   ServiceConfiguration,
   ServiceURLResponse,
@@ -23,6 +26,7 @@ export class ServiceProvider {
     private prisma: PrismaService,
     private userService: UserService,
     private widgetService: WidgetService,
+    private redditService: RedditService,
   ) {}
 
   async upsertService(
@@ -102,12 +106,12 @@ export class ServiceProvider {
     return selectedService.widgets;
   }
 
-  getServiceParametersURL(service: ServiceType, url: string): string {
+  getServiceParametersURL(service: ServiceType): string {
     if (service === 'REDDIT') {
-      return `${url}?client_id=${REDDIT_APP_ID}&response_type=code&state=random&redirect_uri=${FRONT_END_URL}/oauth_callback&duration=permanent&scope=read`;
+      return this.redditService.getAuthorizationUrl();
     }
     if (service === 'TWITTER') {
-      return url;
+      return '';
     }
     return '';
   }
@@ -121,13 +125,23 @@ export class ServiceProvider {
       throw new NotFoundException('Service does not exist');
     }
 
-    const authorization_url = this.getServiceParametersURL(
-      service,
-      selectedService.authorization_url,
-    );
+    const authorization_url = this.getServiceParametersURL(service);
 
     return {
       authorize_url: authorization_url,
+    };
+  }
+
+  async getTokens(dto: AuthorizationDtoUrl): Promise<AuthorizationTokens> {
+    const query = new URLSearchParams(dto.url);
+
+    if (dto.serviceType === 'REDDIT') {
+      return this.redditService.getTokens(query);
+    }
+
+    return {
+      access_token: '',
+      refresh_token: '',
     };
   }
 }

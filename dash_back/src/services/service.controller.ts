@@ -14,6 +14,8 @@ import { UserDec } from 'src/utils/user.decorator';
 import { WidgetConfiguration } from 'src/widget/widget.dto';
 import { ServiceProvider } from './service.service';
 import {
+  AuthorizationDtoUrl,
+  AuthorizationTokens,
   ServiceAvailable,
   ServiceURLResponse,
   UpsertServiceDto,
@@ -54,5 +56,13 @@ export class ServiceController {
     @Query('serviceType') service: ServiceType,
   ): Promise<ServiceURLResponse> {
     return this.serviceProvider.getServiceUrl(service);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/tokens')
+  async getTokens(
+    @Body() dto: AuthorizationDtoUrl,
+  ): Promise<AuthorizationTokens> {
+    return this.serviceProvider.getTokens(dto);
   }
 }

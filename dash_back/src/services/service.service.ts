@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { FRONT_END_URL, REDDIT_APP_ID } from 'src/config';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { WidgetConfiguration } from 'src/widget/widget.dto';
@@ -11,6 +12,7 @@ import { WidgetService } from 'src/widget/widget.service';
 import {
   ServiceAvailable,
   ServiceConfiguration,
+  ServiceURLResponse,
   UpsertServiceDto,
 } from './services.dto';
 import AVAILABLE_SERVICES from './services.json';
@@ -98,5 +100,34 @@ export class ServiceProvider {
       throw new NotFoundException('Service does not exist');
     }
     return selectedService.widgets;
+  }
+
+  getServiceParametersURL(service: ServiceType, url: string): string {
+    if (service === 'REDDIT') {
+      return `${url}?client_id=${REDDIT_APP_ID}&response_type=code&state=random&redirect_uri=${FRONT_END_URL}/oauth_callback&duration=permanent&scope=read`;
+    }
+    if (service === 'TWITTER') {
+      return url;
+    }
+    return '';
+  }
+
+  async getServiceUrl(service: ServiceType): Promise<ServiceURLResponse> {
+    const selectedService = (<ServiceConfiguration[]>AVAILABLE_SERVICES).find(
+      (s) => s.name === service,
+    );
+
+    if (!selectedService) {
+      throw new NotFoundException('Service does not exist');
+    }
+
+    const authorization_url = this.getServiceParametersURL(
+      service,
+      selectedService.authorization_url,
+    );
+
+    return {
+      authorize_url: authorization_url,
+    };
   }
 }

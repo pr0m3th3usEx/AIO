@@ -2,6 +2,7 @@
   {
     "name": "WEATHER",
     "oauth2": false,
+    "authorization_url": "",
     "widgets": [
       {
         "name": "city_temperature",
@@ -19,6 +20,7 @@
   {
     "name": "GOOGLE",
     "oauth2": false,
+    "authorization_url": "",
     "widgets": [
       {
         "name": "translator",
@@ -40,6 +42,7 @@
   {
     "name": "REDDIT",
     "oauth2": true,
+    "authorization_url": "https://www.reddit.com/api/v1/authorize",
     "widgets": [
       {
         "name": "subreddit",
@@ -57,6 +60,7 @@
   {
     "name": "CRYPTO",
     "oauth2": false,
+    "authorization_url": "",
     "widgets": [
       {
         "name": "crypto_price",
@@ -74,6 +78,7 @@
   {
     "name": "TWITTER",
     "oauth2": true,
+    "authorization_url": "",
     "widgets": [
       {
         "name": "user_tweets",
@@ -91,6 +96,7 @@
   {
     "name": "INTRANET",
     "oauth2": true,
+    "authorization_url": "",
     "widgets": [
       {
         "name": "intra_info",

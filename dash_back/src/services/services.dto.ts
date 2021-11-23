@@ -36,6 +36,12 @@ export class ServiceConfiguration {
   name: ServiceType;
   @IsBoolean()
   oauth2: boolean;
+  @IsString()
+  authorization_url: string;
   @IsArray()
   widgets: WidgetConfiguration[];
 }
+
+export type ServiceURLResponse = {
+  authorize_url: string;
+};

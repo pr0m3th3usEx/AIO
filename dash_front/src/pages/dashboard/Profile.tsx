@@ -19,7 +19,11 @@ import { MinLength } from 'class-validator';
 import OAuthModal from 'components/modals/OauthModal';
 import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { ServiceType, useGetServicesAvailableQuery } from 'services/service';
+import {
+  ServiceType,
+  useActivateServiceMutation,
+  useGetServicesAvailableQuery,
+} from 'services/service';
 import { PasswordChangeDto, useChangePasswordMutation } from 'services/user';
 import { useAppSelector } from 'utils/hooks';
 import { Match } from 'utils/validation/match.decorator';
@@ -169,11 +173,43 @@ const ServiceActivator = ({
   const [activated, setActivated] = useState<boolean>(isActivated);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
-  const setActivation = () => {
-    if (!activated && oauth2) {
-      setModalOpen(true);
+  const [setActivationService, { data, isLoading, isSuccess, isError, error }] =
+    useActivateServiceMutation();
+
+  const toast = useToast();
+
+  useEffect(() => {
+    if (!isLoading && isSuccess && data) {
+      setActivated(data.is_activated);
     }
-    setActivated(!activated);
+    if (!isLoading && isError) {
+      toast({
+        status: 'error',
+        title: 'Error occured',
+        duration: 3000,
+      });
+    }
+  }, [data, isLoading, isSuccess, isError, error, toast]);
+
+  const setActivation = () => {
+    if (!activated) {
+      if (oauth2) {
+        setModalOpen(true);
+      } else {
+        setActivationService({
+          service_id: serviceId,
+          serviceType: name,
+          activated: true,
+        });
+      }
+    }
+    if (activated) {
+      setActivationService({
+        service_id: serviceId,
+        serviceType: name,
+        activated: false,
+      });
+    }
   };
 
   return (

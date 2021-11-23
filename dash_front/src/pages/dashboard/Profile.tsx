@@ -10,13 +10,16 @@ import {
   StackDivider,
 } from '@chakra-ui/layout';
 import { useBreakpointValue } from '@chakra-ui/media-query';
+import { Skeleton } from '@chakra-ui/skeleton';
 import { Switch } from '@chakra-ui/switch';
 import { useToast } from '@chakra-ui/toast';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import UnknownProfileImage from 'assets/UnknownProfileImage.jpg';
 import { MinLength } from 'class-validator';
-import { FC, useEffect } from 'react';
+import OAuthModal from 'components/modals/OauthModal';
+import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { ServiceType, useGetServicesAvailableQuery } from 'services/service';
 import { PasswordChangeDto, useChangePasswordMutation } from 'services/user';
 import { useAppSelector } from 'utils/hooks';
 import { Match } from 'utils/validation/match.decorator';
@@ -152,7 +155,27 @@ const ProfileCard = (): JSX.Element => {
   );
 };
 
-const ServiceActivator = (): JSX.Element => {
+const ServiceActivator = ({
+  serviceId,
+  name,
+  oauth2,
+  isActivated,
+}: {
+  serviceId: string;
+  name: ServiceType;
+  oauth2: boolean;
+  isActivated: boolean;
+}): JSX.Element => {
+  const [activated, setActivated] = useState<boolean>(isActivated);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+  const setActivation = () => {
+    if (!activated && oauth2) {
+      setModalOpen(true);
+    }
+    setActivated(!activated);
+  };
+
   return (
     <HStack
       w="100%"
@@ -160,16 +183,32 @@ const ServiceActivator = (): JSX.Element => {
       alignItems="baseline"
       h="24px"
     >
+      <OAuthModal
+        serviceName={name}
+        onCancel={() => setModalOpen(false)}
+        onSuccess={() => setModalOpen(false)}
+        onFailure={() => setModalOpen(false)}
+        isOpen={modalOpen}
+      />
+
       <Text color="black" fontSize="18px">
-        Google
+        {name}
       </Text>
-      <Switch size="lg" color="#3DCCC7" colorScheme="blue"></Switch>
+      <Switch
+        size="lg"
+        color="#3DCCC7"
+        colorScheme="blue"
+        isChecked={activated}
+        onChange={() => setActivation()}
+      ></Switch>
     </HStack>
   );
 };
 
 const Profile: FC = (): JSX.Element => {
   const screenSize = useBreakpointValue({ base: 'SM', md: 'MD' }) || 'MD';
+  const { data, isLoading, isSuccess, isError, error } =
+    useGetServicesAvailableQuery();
 
   return (
     <VStack
@@ -199,12 +238,18 @@ const Profile: FC = (): JSX.Element => {
           </Text>
 
           <VStack w="100%" spacing={{ base: '32px', md: '34px', lg: '36px' }}>
-            <ServiceActivator />
-            <ServiceActivator />
-            <ServiceActivator />
-            <ServiceActivator />
-            <ServiceActivator />
-            <ServiceActivator />
+            {isLoading ? (
+              <Skeleton />
+            ) : (
+              data?.map((s) => (
+                <ServiceActivator
+                  name={s.name}
+                  oauth2={s.oauth2}
+                  isActivated={s.isActivated}
+                  serviceId={s.id}
+                />
+              ))
+            )}
           </VStack>
         </VStack>
       </Stack>

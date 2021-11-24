@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { ScheduleModule } from '@nestjs/schedule';
 import { CryptoService } from 'src/apis/crypto/crypto.service';
 import { RedditService } from 'src/apis/reddit/reddit.service';
 import { JwtStrategy } from 'src/auth/local/jwt.stategy';
@@ -12,6 +13,7 @@ import { WidgetService } from './widget.service';
 @Module({
   imports: [
     PrismaModule,
+    ScheduleModule.forRoot(),
     JwtModule.register({
       secret: JWT_SECRET,
       signOptions: { expiresIn: '1h' },

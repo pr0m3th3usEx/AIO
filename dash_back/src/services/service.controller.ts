@@ -65,4 +65,10 @@ export class ServiceController {
   ): Promise<AuthorizationTokens> {
     return this.serviceProvider.getTokens(dto);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/:id')
+  async getServiceInfo(@Param('id') id: string): Promise<Service> {
+    return this.serviceProvider.getServiceInfo(id);
+  }
 }

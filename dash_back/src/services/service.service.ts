@@ -29,6 +29,16 @@ export class ServiceProvider {
     private redditService: RedditService,
   ) {}
 
+  async getServiceInfo(id: string): Promise<Service> {
+    try {
+      return this.prisma.service.findUnique({
+        where: { id },
+      });
+    } catch (err) {
+      throw new NotFoundException('Service not found');
+    }
+  }
+
   async upsertService(
     user_id: string,
     dto: UpsertServiceDto,

@@ -10,6 +10,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Interval } from '@nestjs/schedule';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ServiceConfiguration } from 'src/services/services.dto';
 import { CleanedUser } from 'src/user/user.dto';
@@ -26,7 +27,14 @@ import AVAILABLE_SERVICES from 'src/services/services.json';
 
 @Injectable()
 export class WidgetService {
+  private timer: number = 0;
+
   constructor(private prisma: PrismaService, userService: UserService) {}
+
+  @Interval(1000)
+  increaseTimer() {
+    this.timer += 1;
+  }
 
   private isWidgetRelatedToService(
     serviceType: ServiceType,

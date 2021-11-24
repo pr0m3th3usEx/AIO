@@ -29,6 +29,28 @@ export type ServiceAvailable = {
   isActivated: boolean;
 };
 
+export type ServiceURLResponse = {
+  authorize_url: string;
+};
+
+export type ServiceActivationDto = {
+  service_id?: string;
+  serviceType: ServiceType;
+  activated: boolean;
+  accessToken?: string;
+  refreshToken?: string;
+};
+
+export type ServiceAuthorizationTokens = {
+  access_token: string;
+  refresh_token: string;
+};
+
+export type ServiceAuthorizationDto = {
+  url: string;
+  serviceType: ServiceType;
+};
+
 const extendedApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getServicesAvailable: builder.query<ServiceAvailable[], void>({
@@ -38,9 +60,37 @@ const extendedApi = api.injectEndpoints({
     getWidgetsFromService: builder.query<WidgetConfiguration[], ServiceType>({
       query: (type) => `/services/${type}/widgets`,
     }),
+
+    getServiceAuthorizationUrl: builder.query<ServiceURLResponse, ServiceType>({
+      query: (type) => `/services/service_url?serviceType=${type}`,
+    }),
+
+    activateService: builder.mutation<Service, ServiceActivationDto>({
+      query: (body) => ({
+        url: '/services',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    getTokens: builder.mutation<
+      ServiceAuthorizationTokens,
+      ServiceAuthorizationDto
+    >({
+      query: (body) => ({
+        url: '/services/tokens',
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetServicesAvailableQuery, useGetWidgetsFromServiceQuery } =
-  extendedApi;
+export const {
+  useGetServicesAvailableQuery,
+  useGetWidgetsFromServiceQuery,
+  useGetServiceAuthorizationUrlQuery,
+  useActivateServiceMutation,
+  useGetTokensMutation,
+} = extendedApi;

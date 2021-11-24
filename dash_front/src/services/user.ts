@@ -30,6 +30,15 @@ export type AccessToken = {
   user: User;
 };
 
+export type PasswordChangeDto = {
+  oldPassword: string;
+  newPassword: string;
+};
+
+export type PasswordChangeConfirmation = {
+  passwordChanged: boolean;
+};
+
 const extendedApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getUser: builder.query<User, void>({
@@ -52,9 +61,23 @@ const extendedApi = api.injectEndpoints({
       }),
       invalidatesTags: ['User'],
     }),
+    changePassword: builder.mutation<
+      PasswordChangeConfirmation,
+      PasswordChangeDto
+    >({
+      query: (body) => ({
+        url: '/user/changepassword',
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetUserQuery, useLoginMutation, useRegisterMutation } =
-  extendedApi;
+export const {
+  useGetUserQuery,
+  useLoginMutation,
+  useRegisterMutation,
+  useChangePasswordMutation,
+} = extendedApi;

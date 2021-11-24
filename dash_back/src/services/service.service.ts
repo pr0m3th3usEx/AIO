@@ -4,13 +4,18 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { RedditService } from 'src/apis/reddit/reddit.service';
+import { FRONT_END_URL, REDDIT_APP_ID } from 'src/config';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { WidgetConfiguration } from 'src/widget/widget.dto';
 import { WidgetService } from 'src/widget/widget.service';
 import {
+  AuthorizationDtoUrl,
+  AuthorizationTokens,
   ServiceAvailable,
   ServiceConfiguration,
+  ServiceURLResponse,
   UpsertServiceDto,
 } from './services.dto';
 import AVAILABLE_SERVICES from './services.json';
@@ -21,6 +26,7 @@ export class ServiceProvider {
     private prisma: PrismaService,
     private userService: UserService,
     private widgetService: WidgetService,
+    private redditService: RedditService,
   ) {}
 
   async upsertService(
@@ -98,5 +104,44 @@ export class ServiceProvider {
       throw new NotFoundException('Service does not exist');
     }
     return selectedService.widgets;
+  }
+
+  getServiceParametersURL(service: ServiceType): string {
+    if (service === 'REDDIT') {
+      return this.redditService.getAuthorizationUrl();
+    }
+    if (service === 'TWITTER') {
+      return '';
+    }
+    return '';
+  }
+
+  async getServiceUrl(service: ServiceType): Promise<ServiceURLResponse> {
+    const selectedService = (<ServiceConfiguration[]>AVAILABLE_SERVICES).find(
+      (s) => s.name === service,
+    );
+
+    if (!selectedService) {
+      throw new NotFoundException('Service does not exist');
+    }
+
+    const authorization_url = this.getServiceParametersURL(service);
+
+    return {
+      authorize_url: authorization_url,
+    };
+  }
+
+  async getTokens(dto: AuthorizationDtoUrl): Promise<AuthorizationTokens> {
+    const query = new URLSearchParams(dto.url);
+
+    if (dto.serviceType === 'REDDIT') {
+      return this.redditService.getTokens(query);
+    }
+
+    return {
+      access_token: '',
+      refresh_token: '',
+    };
   }
 }

@@ -10,7 +10,7 @@ export type WidgetType =
   | 'CRYPTO'
   | 'INTRA'
   | 'TWITTER'
-  | 'REDDIT';
+  | 'SUBREDDIT';
 
 export type WidgetParameter = {
   id: string;

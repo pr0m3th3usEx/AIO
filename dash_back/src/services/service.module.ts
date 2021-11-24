@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { RedditService } from 'src/apis/reddit/reddit.service';
 import { JwtStrategy } from 'src/auth/local/jwt.stategy';
 import { JWT_SECRET } from 'src/config';
 import { PrismaModule } from 'src/prisma/prisma.module';
@@ -18,7 +19,7 @@ import { ServiceProvider } from './service.service';
     }),
     WidgetModule,
   ],
-  providers: [ServiceProvider, JwtStrategy],
+  providers: [ServiceProvider, JwtStrategy, RedditService],
   controllers: [ServiceController],
   exports: [ServiceProvider],
 })

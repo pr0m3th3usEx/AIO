@@ -30,7 +30,7 @@ export type Widget = {
   refresh_rate: number;
   created_at: Date;
   updated_at: Date;
-  parameters: Widget[];
+  parameters: WidgetParameter[];
 };
 
 export type AddWidgetFields = {
@@ -78,8 +78,12 @@ const extendedApi = api.injectEndpoints({
       }),
       invalidatesTags: ['Widget'],
     }),
+    getUserWidgets: builder.query<Widget[], void>({
+      query: () => '/widgets/all',
+      providesTags: ['Widget'],
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useAddNewWidgetMutation } = extendedApi;
+export const { useAddNewWidgetMutation, useGetUserWidgetsQuery } = extendedApi;

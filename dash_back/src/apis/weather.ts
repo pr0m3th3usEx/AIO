@@ -1,68 +1,17 @@
-import fetch from 'node-fetch';
+const fetch = require("node-fetch");
 
-class Weather
+export class Weather
 {
-    lat: number;
-    lon: number;
-
-    constructor()
-    {
-        this.lat = 41.391034;
-        this.lon = 2.193932;
-    }
-
-    private get = (lat: number, lon: number) => {
-        const url = 'http://www.7timer.info/bin/api.pl?lon=' + lon + '&lat=' + lat + '&product=astro&output=json';
-
-        return fetch(url)
-        .then(html => html.json())
-        .catch(error => console.log(error));
-    };
-
-
-    /*
-    **  Return array:
-    **
-    **  [
-    **      {
-    **          weather,
-    **          temp
-    **      },
-    **      ...
-    **  ]
-    */
-    public get_weather = () => {
-        return this.get(this.lat, this.lon).then(js => {
-            let next_weather = [];
-            
-            js['dataseries'].forEach(element => {
-                let buffer = {'weather': '', 'temp': 0};
-
-                if (element['prec_type'] == 'none') {
-                    if (element['cloudcover'] < 3) {
-                        buffer['weather'] = 'clear';
-                    } else if (element['cloudcover'] < 8) {
-                        buffer['weather'] = 'partly_cloudy';
-                    } else {
-                        buffer['weather'] = 'cloudy';
-                    }
-                } else if (element['lifted_index'] < -4) {
-                    if (element['prec_type'] == 'rain') {
-                        buffer['weather'] = 'thunderstorm_rain';
-                    } else {
-                        buffer['weather'] = 'thunderstorm';
-                    }
-                } else if (element['prec_type'] == 'rain') {
-                    buffer['weather'] = 'rain';
-                } else if (element['prec_type'] == 'snow') {
-                    buffer['weather'] = 'snow';
-                }
-                buffer['temp'] = element['temp2m'];
-                next_weather.push(buffer);
-            });
-            return next_weather;
+    current = async (city: string) => {
+        await fetch("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + this.#API_KEY).then(info => {
+            return info.json();
+        }).then(content => {
+            return {
+                weat: content.weather[0].main,
+                temp: (content.main.temp - 273.15).toFixed(2)
+            };
+        }).catch(error => {
+            console.log(error);
         });
-    };
+    }
 }
-
-export default Weather;

@@ -6,7 +6,7 @@ import { LocalStrategy } from './local/local.stategy';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './local/jwt.stategy';
 import { JWT_SECRET } from 'src/config';
-import { UserService } from 'src/user/user.service';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -15,9 +15,10 @@ import { UserService } from 'src/user/user.service';
       secret: JWT_SECRET,
       signOptions: { expiresIn: '1h' },
     }),
+    UserModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, UserService],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

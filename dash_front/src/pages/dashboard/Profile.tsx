@@ -10,12 +10,98 @@ import {
   StackDivider,
 } from '@chakra-ui/layout';
 import { useBreakpointValue } from '@chakra-ui/media-query';
+import { Skeleton } from '@chakra-ui/skeleton';
 import { Switch } from '@chakra-ui/switch';
+import { useToast } from '@chakra-ui/toast';
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import UnknownProfileImage from 'assets/UnknownProfileImage.jpg';
-import { FC } from 'react';
+import { MinLength } from 'class-validator';
+import OAuthModal from 'components/modals/OauthModal';
+import { FC, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import {
+  ServiceType,
+  useActivateServiceMutation,
+  useGetServicesAvailableQuery,
+} from 'services/service';
+import { PasswordChangeDto, useChangePasswordMutation } from 'services/user';
+import { useAppSelector } from 'utils/hooks';
+import { Match } from 'utils/validation/match.decorator';
+
+class ChangePasswordFields {
+  @MinLength(8, { message: 'Password is too short (min. 8 characters)\n' })
+  currentPassword: string;
+  @MinLength(8, { message: 'Password is too short (min. 8 characters)\n' })
+  newPassword: string;
+  @Match('newPassword', {
+    message: 'Password does not match\n',
+  })
+  confirmNewPassword: string;
+}
+
+const resolver = classValidatorResolver(ChangePasswordFields);
 
 const ProfileCard = (): JSX.Element => {
+  const { user } = useAppSelector((state) => state);
   const screenSize = useBreakpointValue({ base: 'SM', md: 'MD' }) || 'MD';
+  const toast = useToast();
+  const [changePassword, { data, isLoading, isSuccess, isError, error }] =
+    useChangePasswordMutation();
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors: fieldErrors },
+  } = useForm<ChangePasswordFields>({ resolver });
+  const onFormSubmit = (data: ChangePasswordFields) => {
+    const dto: PasswordChangeDto = {
+      oldPassword: data.currentPassword,
+      newPassword: data.newPassword,
+    };
+
+    changePassword(dto);
+  };
+
+  useEffect(() => {
+    if (Object.keys(fieldErrors).length > 0) {
+      toast({
+        title: 'Incorrect fields',
+        description: `
+          ${
+            fieldErrors.currentPassword?.message ||
+            fieldErrors.newPassword?.message ||
+            fieldErrors.confirmNewPassword?.message ||
+            ''
+          }
+        `,
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  }, [fieldErrors, toast]);
+
+  useEffect(() => {
+    if (!isLoading && isSuccess) {
+      reset();
+      toast({
+        title: 'Password changed',
+        status: 'success',
+        duration: 4000,
+        isClosable: true,
+      });
+    } else if (!isLoading && isError && error) {
+      console.log(error);
+      toast({
+        title: 'Error',
+        status: 'error',
+        description: "Couldn't change password! Try again!",
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  }, [reset, toast, isLoading, isSuccess, isError, error]);
 
   return (
     <VStack
@@ -30,9 +116,9 @@ const ProfileCard = (): JSX.Element => {
           w={{ base: '90px', md: '128px', lg: '160px' }}
         />
         <Text color="black" fontWeight="bold">
-          Username
+          {user.username}
         </Text>
-        <Text color="gray">Email</Text>
+        <Text color="gray">{user.email}</Text>
       </VStack>
 
       <VStack spacing="24px" align="start" w="100%">
@@ -40,22 +126,28 @@ const ProfileCard = (): JSX.Element => {
           Password settings
         </Text>
 
-        <form style={{ width: '100%' }}>
+        <form style={{ width: '100%' }} onSubmit={handleSubmit(onFormSubmit)}>
           <VStack spacing="12px" w="100%" align="start" variant="dark">
             <Input
               placeholder="Enter current password"
               variant="light"
               type="password"
+              {...register('currentPassword', { required: true })}
             />
             <Input
               placeholder="Enter new password"
               variant="light"
               type="password"
+              {...register('newPassword', { required: true })}
             />
             <Input
               placeholder="Confirm new password"
               variant="light"
               type="password"
+              {...register('confirmNewPassword', {
+                required: true,
+                minLength: 8,
+              })}
             />
             <Button type="submit" variant="light" fontWeight="bold">
               Save new password
@@ -67,7 +159,59 @@ const ProfileCard = (): JSX.Element => {
   );
 };
 
-const ServiceActivator = (): JSX.Element => {
+const ServiceActivator = ({
+  serviceId,
+  name,
+  oauth2,
+  isActivated,
+}: {
+  serviceId: string;
+  name: ServiceType;
+  oauth2: boolean;
+  isActivated: boolean;
+}): JSX.Element => {
+  const [activated, setActivated] = useState<boolean>(isActivated);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+  const [setActivationService, { data, isLoading, isSuccess, isError, error }] =
+    useActivateServiceMutation();
+
+  const toast = useToast();
+
+  useEffect(() => {
+    if (!isLoading && isSuccess && data) {
+      setActivated(data.is_activated);
+    }
+    if (!isLoading && isError) {
+      toast({
+        status: 'error',
+        title: 'Error occured',
+        duration: 3000,
+      });
+    }
+  }, [data, isLoading, isSuccess, isError, error, toast]);
+
+  const setActivation = () => {
+    if (!activated) {
+      if (oauth2) {
+        setModalOpen(true);
+      } else {
+        setActivationService({
+          service_id: serviceId,
+          serviceType: name,
+          activated: true,
+        });
+      }
+    }
+    if (activated) {
+      setActivationService({
+        service_id: serviceId,
+        serviceType: name,
+        activated: false,
+      });
+    }
+  };
+
   return (
     <HStack
       w="100%"
@@ -75,16 +219,33 @@ const ServiceActivator = (): JSX.Element => {
       alignItems="baseline"
       h="24px"
     >
+      <OAuthModal
+        serviceId={serviceId}
+        serviceName={name}
+        onCancel={() => setModalOpen(false)}
+        onSuccess={() => setModalOpen(false)}
+        onFailure={() => setModalOpen(false)}
+        isOpen={modalOpen}
+      />
+
       <Text color="black" fontSize="18px">
-        Google
+        {name}
       </Text>
-      <Switch size="lg" color="#3DCCC7" colorScheme="blue"></Switch>
+      <Switch
+        size="lg"
+        color="#3DCCC7"
+        colorScheme="blue"
+        isChecked={activated}
+        onChange={() => setActivation()}
+      ></Switch>
     </HStack>
   );
 };
 
 const Profile: FC = (): JSX.Element => {
   const screenSize = useBreakpointValue({ base: 'SM', md: 'MD' }) || 'MD';
+  const { data, isLoading, isSuccess, isError, error } =
+    useGetServicesAvailableQuery();
 
   return (
     <VStack
@@ -114,12 +275,18 @@ const Profile: FC = (): JSX.Element => {
           </Text>
 
           <VStack w="100%" spacing={{ base: '32px', md: '34px', lg: '36px' }}>
-            <ServiceActivator />
-            <ServiceActivator />
-            <ServiceActivator />
-            <ServiceActivator />
-            <ServiceActivator />
-            <ServiceActivator />
+            {isLoading ? (
+              <Skeleton />
+            ) : (
+              data?.map((s) => (
+                <ServiceActivator
+                  name={s.name}
+                  oauth2={s.oauth2}
+                  isActivated={s.isActivated}
+                  serviceId={s.id}
+                />
+              ))
+            )}
           </VStack>
         </VStack>
       </Stack>

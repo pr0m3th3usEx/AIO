@@ -15,6 +15,7 @@ import AuthLayout from 'pages/auth/Layout';
 import DashboardLayout from 'pages/dashboard/Layout';
 import PrivateRoute from 'components/Navigation/PrivateRoute';
 import { useAppSelector } from 'utils/hooks';
+import OAuthHandler from 'pages/dashboard/OAuthHandler';
 
 const AuthRoutes = (): JSX.Element => {
   const { isAuth } = useAppSelector((state) => state.auth);
@@ -64,6 +65,14 @@ const AppRoutes = (): JSX.Element => {
       <Routes>
         <Route path="/auth/*" element={<AuthRoutes />} />
         <Route path="/dashboard/*" element={<DashboardRoutes />} />
+        <Route
+          path="/oauth_callback"
+          element={
+            <PrivateRoute>
+              <OAuthHandler />
+            </PrivateRoute>
+          }
+        />
         <Route path="/" element={<Navigate to="/dashboard" />} />
       </Routes>
     </Router>

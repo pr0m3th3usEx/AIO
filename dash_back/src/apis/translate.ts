@@ -1,6 +1,6 @@
 const translation = require('@iamtraction/google-translate');
 
-const available_languages = [
+export const available_languages = [
     "Automatic", "Afrikaans", "Albanian", "Amharic", "Arabic", "Armenian",
     "Azerbaijani", "Basque", "Belarusian", "Bengali", "Bosnian", "Bulgarian",
     "Catalan", "Cebuano", "Chichewa", "Chinese Simplified", "Chinese Traditional",
@@ -19,7 +19,7 @@ const available_languages = [
     "Vietnamese", "Welsh", "Xhosa", "Yiddish", "Yoruba", "Zulu"
 ];
 
-class Translate
+export class Translate
 {
     get_language_code = (language: string) => {
         const languages = {

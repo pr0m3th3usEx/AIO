@@ -1,3 +1,5 @@
+const translation = require('@iamtraction/google-translate');
+
 const available_languages = [
     "Automatic",
     "Afrikaans",
@@ -105,3 +107,7 @@ const available_languages = [
     "Yoruba",
     "Zulu"
 ];
+
+class Translate
+{
+}

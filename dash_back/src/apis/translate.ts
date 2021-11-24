@@ -229,4 +229,12 @@ class Translate
 
         return keys[0] || null;
     }
+
+    translate = (text: string, to: string) => {
+        return translation(text, { from: "fr", to: to }).then(response => {
+            return response.text;
+        }).catch(error => {
+            throw new Error(error);
+        });
+    }
 }

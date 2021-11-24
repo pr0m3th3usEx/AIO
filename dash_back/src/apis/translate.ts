@@ -141,18 +141,16 @@ export class Translate
         return keys[0] || null;
     }
 
-    translate = (text: string, to: string) => {
-        return translation(text, { from: "fr", to: to }).then(response => {
+    translate = async (text: string, from: string, to: string) => {
+        return await translation(text, { from, to }).then(response => {
             return response.text;
         }).catch(error => {
             throw new Error(error);
         });
     }
 }
-/*
+
+
 const t = new Translate();
 
-available_languages.forEach(element => {
-    t.translate("La traduction fonctionne", element).then(text => {console.log(text)}).catch(error => {console.log(error)});
-});
-*/
+t.translate("Salut monde", "fr", t.get_language_code("en")).then(text => console.log(text)).catch(error => console.log(error));

@@ -10,4 +10,5 @@ export const REDDIT_APP_SECRET = env
   .get('REDDIT_APP_SECRET')
   .required(true)
   .asString();
+export const COINAPI_KEY = env.get('COINAPI_KEY').required(true).asString();
 export const FRONT_END_URL = env.get('FRONT_END_URL').required(true).asString();

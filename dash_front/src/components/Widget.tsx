@@ -6,9 +6,10 @@ import { Widget as WidgetType } from 'services/widget';
 import ErrorIllustration from 'assets/error.svg';
 import { Image } from '@chakra-ui/image';
 import CryptoWidget from './widgets/CryptoWidget';
+import SubredditWidget from './widgets/SubredditWidget';
+import UserTweetsWidget from './widgets/UserTweetsWidget';
 
 const WidgetCanvas = ({ widget }: { widget: WidgetType }) => {
-  // if (widget.type === 'CITY_TEMPERATURE')
   if (widget.type === 'CRYPTO') {
     return (
       <CryptoWidget
@@ -20,11 +21,30 @@ const WidgetCanvas = ({ widget }: { widget: WidgetType }) => {
     );
   }
 
-  return <></>;
+  if (widget.type === 'SUBREDDIT') {
+    return (
+      <SubredditWidget
+        id={widget.id}
+        serviceId={widget.service_id}
+        refreshRate={widget.refresh_rate}
+        parameters={widget.parameters}
+      />
+    );
+  }
+  if (widget.type === 'USER_TWEETS') {
+    return (
+      <UserTweetsWidget
+        id={widget.id}
+        serviceId={widget.service_id}
+        refreshRate={widget.refresh_rate}
+        parameters={widget.parameters}
+      />
+    );
+  }
+  // if (widget.type === 'CITY_TEMPERATURE')
   // if (widget.type === 'INTRA')
-  // if (widget.type === 'SUBREDDIT')
   // if (widget.type === 'TRANSLATOR')
-  // if (widget.type === 'TWITTER')
+  return <></>;
 };
 
 const WidgetError = ({ activated }: { activated?: boolean }) => {
@@ -57,9 +77,6 @@ const Widget = ({ data }: { data: WidgetType }) => {
   } = useGetServiceInfoQuery(data.service_id);
 
   useEffect(() => {
-    if (!isLoading && isSuccess) {
-      console.log(service);
-    }
     if (!isLoading && isError) {
       console.log(error);
     }
@@ -67,9 +84,8 @@ const Widget = ({ data }: { data: WidgetType }) => {
 
   return (
     <VStack
-      w={{ base: '100%', sm: '100%', md: '400px' }}
+      w={{ base: '100%', sm: '100%', md: 'auto' }}
       h="100%"
-      minH="300px"
       bg="white"
       borderRadius="12px"
     >
@@ -77,8 +93,9 @@ const Widget = ({ data }: { data: WidgetType }) => {
       {((!isLoading && isError) || (service && !service.is_activated)) && (
         <WidgetError activated={service?.is_activated} />
       )}
-      {(!isLoading && isSuccess) ||
-        (service?.is_activated && <WidgetCanvas widget={data} />)}
+      {!isLoading && isSuccess && service?.is_activated && (
+        <WidgetCanvas widget={data} />
+      )}
     </VStack>
   );
 };

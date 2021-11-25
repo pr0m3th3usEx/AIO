@@ -9,7 +9,7 @@ export type WidgetType =
   | 'CITY_TEMPERATURE'
   | 'CRYPTO'
   | 'INTRA'
-  | 'TWITTER'
+  | 'USER_TWEETS'
   | 'SUBREDDIT';
 
 export type WidgetParameter = {

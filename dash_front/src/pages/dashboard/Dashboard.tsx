@@ -1,5 +1,5 @@
 import { Button } from '@chakra-ui/button';
-import { Box, HStack, Text, VStack } from '@chakra-ui/layout';
+import { Box, Grid, HStack, Text, VStack } from '@chakra-ui/layout';
 import { Skeleton } from '@chakra-ui/skeleton';
 import { useToast } from '@chakra-ui/toast';
 import CreateWidgetModal from 'components/modals/CreateWidgetModal';
@@ -76,8 +76,14 @@ const Dashboard: FC = (): JSX.Element => {
           <Text color="black">Layout manager</Text>
         </HStack>
       </HStack>
-      <HStack
-        spacing="10px"
+      <Grid
+        templateColumns={{
+          base: 'repeat(1, 1fr)',
+          sm: 'repeat(1, 1fr)',
+          md: 'repeat(2, 1fr)',
+          lg: 'repeat(3, 1fr)',
+        }}
+        gap={4}
         w="100%"
         h="100%"
         padding={{ base: '10px', sm: '12px', md: '14px', lg: '16px' }}
@@ -87,7 +93,7 @@ const Dashboard: FC = (): JSX.Element => {
         ) : (
           widgets?.map((widget) => <Widget key={widget.id} data={widget} />)
         )}
-      </HStack>
+      </Grid>
     </VStack>
   );
 };

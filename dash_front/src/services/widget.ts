@@ -87,6 +87,32 @@ export type UserTweets = {
   user: TwitterUser;
 };
 
+export type Thing<T> = {
+  id?: string;
+  name?: string;
+  kind: string;
+  data: T;
+};
+
+export type List<T> = {
+  before: string;
+  after: string;
+  modhash: string;
+  children: T[];
+};
+
+export type Post = {
+  author: string;
+  subreddit: string;
+  title: string;
+  url: string;
+  media?: any;
+  score: number;
+  likes: number;
+  clicked: boolean;
+  thumbnail: string;
+};
+
 const extendedApi = api.injectEndpoints({
   endpoints: (builder) => ({
     addNewWidget: builder.mutation<Widget, CreateWidgetDto>({

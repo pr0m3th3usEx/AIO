@@ -1,5 +1,6 @@
-import { Text, VStack } from '@chakra-ui/layout';
-import { WidgetParameter } from 'services/widget';
+import { Image } from '@chakra-ui/image';
+import { HStack, Link, StackDivider, Text, VStack } from '@chakra-ui/layout';
+import { WidgetParameter, Post as PostType } from 'services/widget';
 
 interface WidgetProps {
   id: string;
@@ -7,6 +8,50 @@ interface WidgetProps {
   parameters: WidgetParameter[];
   refreshRate: number;
 }
+
+const Post = ({
+  author,
+  subreddit,
+  title,
+  url,
+  media,
+  score,
+  likes,
+  clicked,
+  thumbnail,
+}: PostType) => {
+  return (
+    <VStack
+      w="100%"
+      spacing="24px"
+      align="start"
+      _hover={{
+        background: 'gray.light',
+      }}
+      p="24px"
+      cursor="pointer"
+      onClick={() => window.open(url, '_blank')}
+    >
+      <VStack w="100%" spacing="12px" align="start" fontSize={['12px', '14px']}>
+        <Text color="gray">By {author}</Text>
+        <HStack spacing="24px" w="100%" minH="100px" alignItems="start">
+          <Image src={thumbnail} h="100px" />
+          <Text color="black" fontWeight="600">
+            {title}
+          </Text>
+        </HStack>
+      </VStack>
+      <Text color="black">
+        <Text as="span" color="grey">
+          Link:&nbsp;
+          <Link href={url} isExternal>
+            {url.length < 40 ? url : url.substr(0, 40) + '...'}
+          </Link>
+        </Text>
+      </Text>
+    </VStack>
+  );
+};
 
 const SubredditWidget = ({
   id,
@@ -43,6 +88,46 @@ const SubredditWidget = ({
         >
           Last refresh:
         </Text>
+      </VStack>
+
+      <VStack
+        w="100%"
+        align="start"
+        maxH="250px"
+        overflowY="auto"
+        overflowX="hidden"
+        divider={<StackDivider borderColor="gray.200" />}
+      >
+        <Post
+          author="u/DrinkMoreCodeMore"
+          subreddit="r/Technology"
+          title="A North Korean man who smuggled 'Squid Game' into the country is to be executed by firing squad and a high-school student who bought a USB drive with the show will be jailed for life, report says"
+          url="https://www.businessinsider.com/north-korea-execution-life-sentence-hard-labor-squid-game-2021-11"
+          score={10}
+          likes={15}
+          clicked={false}
+          thumbnail="https://b.thumbs.redditmedia.com/_XcbGJpCec_DGeeneAl69zAS3acpaylDI_RriHpjINI.jpg"
+        />
+        <Post
+          author="u/DrinkMoreCodeMore"
+          subreddit="r/Technology"
+          title="A North Korean man who smuggled 'Squid Game' into the country is to be executed by firing squad and a high-school student who bought a USB drive with the show will be jailed for life, report says"
+          url="https://www.businessinsider.com/north-korea-execution-life-sentence-hard-labor-squid-game-2021-11"
+          score={10}
+          likes={15}
+          clicked={false}
+          thumbnail="https://b.thumbs.redditmedia.com/_XcbGJpCec_DGeeneAl69zAS3acpaylDI_RriHpjINI.jpg"
+        />
+        <Post
+          author="u/DrinkMoreCodeMore"
+          subreddit="r/Technology"
+          title="A North Korean man who smuggled 'Squid Game' into the country is"
+          url="https://www.businessinsider.com/north-korea-execution-life-sentence-hard-labor-squid-game-2021-11"
+          score={10}
+          likes={15}
+          clicked={false}
+          thumbnail="https://b.thumbs.redditmedia.com/_XcbGJpCec_DGeeneAl69zAS3acpaylDI_RriHpjINI.jpg"
+        />
       </VStack>
     </VStack>
   );

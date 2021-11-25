@@ -38,7 +38,7 @@ export type Post = {
   subreddit: string;
   title: string;
   url: string;
-  media: any;
+  media?: any;
   score: number;
   likes: number;
   clicked: boolean;
@@ -92,10 +92,6 @@ export class RedditService {
     } catch (err) {
       throw err;
     }
-    return {
-      access_token: '',
-      refresh_token: '',
-    };
   }
 
   async getNewSubredditPosts(

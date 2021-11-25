@@ -21,7 +21,22 @@ const Tweet = ({
   author: TwitterUser;
 }) => {
   return (
-    <VStack w="100%" spacing="12px" align="start">
+    <VStack
+      w="100%"
+      spacing="12px"
+      align="start"
+      _hover={{
+        background: 'gray.light',
+      }}
+      p="6px"
+      cursor="pointer"
+      onClick={() =>
+        window.open(
+          `https://twitter.com/${author.username}/status/${id}`,
+          '_blank',
+        )
+      }
+    >
       <HStack w="100%" spacing="12px">
         <Image
           src={author.profile_image_url}
@@ -38,7 +53,7 @@ const Tweet = ({
       <Text color="black">{text}</Text>
       <HStack spacing="12px" justifyContent="space-between" width="100%">
         <Text color="gray">
-          <Link href={`https://twitter.com/${author.name}/status/${id}`}>
+          <Link href={`https://twitter.com/${author.username}/status/${id}`}>
             View more...
           </Link>
         </Text>
@@ -92,7 +107,6 @@ const UserTweetsWidget = ({
         maxH="250px"
         overflowY="auto"
         overflowX="hidden"
-        spacing="12px"
         divider={<StackDivider borderColor="gray.200" />}
       >
         <Tweet

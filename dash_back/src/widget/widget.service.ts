@@ -36,6 +36,7 @@ import {
   Tweet,
   TwitterService,
   TwitterTweets,
+  UserTweets,
 } from 'src/apis/twitter/twitter.service';
 
 @Injectable()
@@ -291,7 +292,7 @@ export class WidgetService {
 
   async refreshWidget(
     widgetId: string,
-  ): Promise<Thing<List<Post>> | ExchangeRate | Tweet[]> {
+  ): Promise<Thing<List<Post>> | ExchangeRate | UserTweets> {
     try {
       const widget = await this.prisma.widget.findUnique({
         where: { id: widgetId },

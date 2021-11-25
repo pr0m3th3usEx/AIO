@@ -18,10 +18,26 @@ export type Tweet = {
   created_at: Date;
   id: string;
   text: string;
+  author_id: string;
+};
+
+export type TwitterUser = {
+  name: string;
+  profile_image_url: string;
+  id: string;
+  username: string;
+};
+
+export type UserTweets = {
+  tweets: Tweet[];
+  user: TwitterUser;
 };
 
 export type TwitterTweets = {
   data: Tweet[];
+  includes: {
+    users: TwitterUser[];
+  };
 };
 @Injectable()
 export class TwitterService {
@@ -65,11 +81,13 @@ export class TwitterService {
     }
   }
 
-  async getLastTweetsFromUser(user: string): Promise<Tweet[]> {
-    return await (
+  async getLastTweetsFromUser(user: string): Promise<UserTweets> {
+    const data = await (
       await this.instance.get<TwitterTweets>(
-        `/tweets/search/recent?query=${user}&tweets.fields=created_at&max_results=25`,
+        `/tweets/search/recent?query=from:${user}&tweets.fields=created_att&expansions=author_id&user.fields=name,profile_image_url&max_results=25`,
       )
-    ).data.data;
+    ).data;
+
+    return { tweets: data.data, user: data.includes.users[0] };
   }
 }

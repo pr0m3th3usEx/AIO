@@ -33,7 +33,11 @@ const CryptoWidget = ({
         >
           Cours du {parameters[0].value_string}
         </Text>
-        <Text color="black" opacity="0.54">
+        <Text
+          color="black"
+          fontSize={{ base: '13px', sm: '13px', md: '14px', lg: '16px' }}
+          opacity="0.54"
+        >
           Last refresh:
         </Text>
       </VStack>

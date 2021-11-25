@@ -68,6 +68,25 @@ export type WidgetConfiguration = {
   params: WidgetParameterConfiguration[];
 };
 
+export type Tweet = {
+  created_at: Date;
+  id: string;
+  text: string;
+  author_id: string;
+};
+
+export type TwitterUser = {
+  name: string;
+  profile_image_url: string;
+  id: string;
+  username: string;
+};
+
+export type UserTweets = {
+  tweets: Tweet[];
+  user: TwitterUser;
+};
+
 const extendedApi = api.injectEndpoints({
   endpoints: (builder) => ({
     addNewWidget: builder.mutation<Widget, CreateWidgetDto>({

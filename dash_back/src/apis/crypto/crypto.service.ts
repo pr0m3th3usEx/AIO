@@ -3,7 +3,7 @@ import axios from 'axios';
 import { response } from 'express';
 import { COINAPI_KEY } from 'src/config';
 
-type ExchangeRate = {
+export type ExchangeRate = {
   time: Date;
   asset_id_base: string;
   asset_id_quote: string;

@@ -8,6 +8,10 @@ interface WidgetProps {
 }
 
 const CryptoWidget = ({ ...props }: WidgetProps) => {
+  // setInterval(async () => {
+
+  // }, 1000);
+
   return <></>;
 };
 

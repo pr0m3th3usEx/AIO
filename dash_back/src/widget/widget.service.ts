@@ -8,6 +8,7 @@ import {
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
@@ -24,12 +25,24 @@ import {
   WidgetParameterDto,
 } from './widget.dto';
 import AVAILABLE_SERVICES from 'src/services/services.json';
+import {
+  List,
+  Post,
+  RedditService,
+  Thing,
+} from 'src/apis/reddit/reddit.service';
+import { CryptoService, ExchangeRate } from 'src/apis/crypto/crypto.service';
 
 @Injectable()
 export class WidgetService {
   private timer: number = 0;
 
-  constructor(private prisma: PrismaService, userService: UserService) {}
+  constructor(
+    private prisma: PrismaService,
+    private userService: UserService,
+    private cryptoService: CryptoService,
+    private redditService: RedditService,
+  ) {}
 
   @Interval(1000)
   increaseTimer() {
@@ -267,6 +280,36 @@ export class WidgetService {
       if (err instanceof Prisma.PrismaClientKnownRequestError) {
         throw new NotFoundException('Widget not found');
       }
+    }
+  }
+
+  async refreshWidget(
+    widgetId: string,
+  ): Promise<Thing<List<Post>> | ExchangeRate> {
+    try {
+      const widget = await this.prisma.widget.findUnique({
+        where: { id: widgetId },
+        include: {
+          parameters: true,
+        },
+      });
+
+      try {
+        if (widget.type === 'CRYPTO') {
+          return this.cryptoService.getExchangeRate(
+            widget.parameters[0].value_string,
+          );
+        }
+        if (widget.type === 'SUBREDDIT') {
+          return this.redditService.getNewSubredditPosts(
+            widget.parameters[0].value_string,
+          );
+        }
+      } catch (err) {
+        throw new InternalServerErrorException();
+      }
+    } catch (err) {
+      throw new NotFoundException('Widget not found');
     }
   }
 }

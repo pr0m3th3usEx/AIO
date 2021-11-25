@@ -32,6 +32,11 @@ import {
   Thing,
 } from 'src/apis/reddit/reddit.service';
 import { CryptoService, ExchangeRate } from 'src/apis/crypto/crypto.service';
+import {
+  Tweet,
+  TwitterService,
+  TwitterTweets,
+} from 'src/apis/twitter/twitter.service';
 
 @Injectable()
 export class WidgetService {
@@ -42,6 +47,7 @@ export class WidgetService {
     private userService: UserService,
     private cryptoService: CryptoService,
     private redditService: RedditService,
+    private twitterService: TwitterService,
   ) {}
 
   @Interval(1000)
@@ -285,12 +291,13 @@ export class WidgetService {
 
   async refreshWidget(
     widgetId: string,
-  ): Promise<Thing<List<Post>> | ExchangeRate> {
+  ): Promise<Thing<List<Post>> | ExchangeRate | Tweet[]> {
     try {
       const widget = await this.prisma.widget.findUnique({
         where: { id: widgetId },
         include: {
           parameters: true,
+          service: true,
         },
       });
 
@@ -302,6 +309,12 @@ export class WidgetService {
         }
         if (widget.type === 'SUBREDDIT') {
           return this.redditService.getNewSubredditPosts(
+            widget.parameters[0].value_string,
+            widget.service.access_token,
+          );
+        }
+        if (widget.type === 'USER_TWEETS') {
+          return this.twitterService.getLastTweetsFromUser(
             widget.parameters[0].value_string,
           );
         }

@@ -3,6 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CryptoService } from 'src/apis/crypto/crypto.service';
 import { RedditService } from 'src/apis/reddit/reddit.service';
+import { TwitterService } from 'src/apis/twitter/twitter.service';
 import { JwtStrategy } from 'src/auth/local/jwt.stategy';
 import { JWT_SECRET } from 'src/config';
 import { PrismaModule } from 'src/prisma/prisma.module';
@@ -21,7 +22,13 @@ import { WidgetService } from './widget.service';
     UserModule,
   ],
   controllers: [WidgetController],
-  providers: [WidgetService, JwtStrategy, CryptoService, RedditService],
+  providers: [
+    WidgetService,
+    JwtStrategy,
+    CryptoService,
+    RedditService,
+    TwitterService,
+  ],
   exports: [WidgetService],
 })
 export class WidgetModule {}

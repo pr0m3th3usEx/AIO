@@ -98,14 +98,20 @@ export class RedditService {
     };
   }
 
-  async getNewSubredditPosts(sr: string): Promise<Thing<List<Post>>> {
+  async getNewSubredditPosts(
+    sr: string,
+    access_token: string,
+  ): Promise<Thing<List<Post>>> {
     return this.instance
-      .get(`/${sr}/new`, {
+      .get(`r/${sr}/new`, {
         data: {
           after: null,
           before: null,
           limit: 25,
           count: null,
+        },
+        headers: {
+          Authorization: 'Bearer ' + access_token,
         },
       })
       .then((response) => response.data);

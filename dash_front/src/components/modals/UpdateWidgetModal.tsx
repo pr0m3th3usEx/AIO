@@ -16,6 +16,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   UpdateWidgetParameterDto,
+  useRemoveWidgetMutation,
   useUpdateWidgetMutation,
   WidgetParameter,
   WidgetParameterDto,
@@ -48,8 +49,23 @@ const UpdateWidgetModal = ({
   >(parameters);
   const [
     updateWidget,
-    { isSuccess: isUpdated, isError: isUpdateFailed, error: updateError },
+    {
+      isLoading: isUpdateLoading,
+      isSuccess: isUpdated,
+      isError: isUpdateFailed,
+      error: updateError,
+    },
   ] = useUpdateWidgetMutation();
+
+  const [
+    removeWidget,
+    {
+      isLoading: isRemoveLoading,
+      isSuccess: isRemoved,
+      isError: isRemovedFailed,
+      error: removeError,
+    },
+  ] = useRemoveWidgetMutation();
 
   const {
     handleSubmit,
@@ -83,10 +99,32 @@ const UpdateWidgetModal = ({
   });
 
   if (isUpdated) {
+    toast({
+      status: 'success',
+      title: 'Widget successfully updated',
+      duration: 3000,
+    });
     onClose();
   }
 
-  if (isUpdateFailed) {
+  if (!isRemoveLoading && isRemoved) {
+    toast({
+      status: 'success',
+      title: 'Widget removed successfully',
+      duration: 3000,
+    });
+    onClose();
+  }
+
+  if (!isUpdateLoading && isUpdateFailed) {
+    toast({
+      status: 'error',
+      title: 'Update failed',
+      duration: 3000,
+    });
+  }
+
+  if (!isRemoveLoading && isRemovedFailed) {
     toast({
       status: 'error',
       title: 'Update failed',
@@ -147,16 +185,35 @@ const UpdateWidgetModal = ({
               ))}{' '}
               <HStack
                 w="100%"
-                justifyContent="flex-end"
                 alignItems="center"
-                spacing="24px"
+                justifyContent="space-between"
               >
-                <Button variant="link" onClick={onCancel}>
-                  CANCEL
+                <Button
+                  onClick={() => removeWidget(widget_id)}
+                  bg="red"
+                  color="white"
+                  fontWeight="bold"
+                  _hover={{ opacity: '0.54' }}
+                  isLoading={isRemoveLoading}
+                >
+                  Remove widget
                 </Button>
-                <Button variant="light" type="submit">
-                  SAVE
-                </Button>
+                <HStack
+                  justifyContent="flex-end"
+                  alignItems="center"
+                  spacing="24px"
+                >
+                  <Button variant="link" onClick={onCancel}>
+                    CANCEL
+                  </Button>
+                  <Button
+                    variant="light"
+                    type="submit"
+                    isLoading={isUpdateLoading}
+                  >
+                    SAVE
+                  </Button>
+                </HStack>
               </HStack>
             </VStack>
           </form>

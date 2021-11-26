@@ -106,14 +106,7 @@ const Widget = ({ data }: { data: WidgetType }) => {
           currentRefreshRate={data.refresh_rate}
           parameters={data.parameters}
           onCancel={() => setUpdateModalOpen(false)}
-          onClose={() => {
-            toast({
-              status: 'success',
-              title: 'Widget successfully updated',
-              duration: 3000,
-            });
-            setUpdateModalOpen(false);
-          }}
+          onClose={() => setUpdateModalOpen(false)}
           isOpen={updateModalOpen}
         />
       )}

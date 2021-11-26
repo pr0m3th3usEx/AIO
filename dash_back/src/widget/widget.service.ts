@@ -217,8 +217,8 @@ export class WidgetService {
       });
 
       const transaction = await this.prisma.$transaction([
-        deleteWidget,
         deleteWidgetParameters,
+        deleteWidget,
       ]);
 
       return true;

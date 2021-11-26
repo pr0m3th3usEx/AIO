@@ -10,6 +10,7 @@ import CryptoWidget from './widgets/CryptoWidget';
 import SubredditWidget from './widgets/SubredditWidget';
 import UserTweetsWidget from './widgets/UserTweetsWidget';
 import UpdateWidgetModal from './modals/UpdateWidgetModal';
+import { toast, useToast } from '@chakra-ui/toast';
 
 const WidgetCanvas = ({ widget }: { widget: WidgetType }) => {
   if (widget.type === 'CRYPTO') {
@@ -79,6 +80,8 @@ const Widget = ({ data }: { data: WidgetType }) => {
     error,
   } = useGetServiceInfoQuery(data.service_id);
 
+  const toast = useToast();
+
   useEffect(() => {
     if (!isLoading && isError) {
       console.log(error);
@@ -99,10 +102,18 @@ const Widget = ({ data }: { data: WidgetType }) => {
     >
       {updateModalOpen && (
         <UpdateWidgetModal
+          widget_id={data.id}
           currentRefreshRate={data.refresh_rate}
           parameters={data.parameters}
           onCancel={() => setUpdateModalOpen(false)}
-          onSubmit={(data) => {}}
+          onClose={() => {
+            toast({
+              status: 'success',
+              title: 'Widget successfully updated',
+              duration: 3000,
+            });
+            setUpdateModalOpen(false);
+          }}
           isOpen={updateModalOpen}
         />
       )}

@@ -239,6 +239,13 @@ export class WidgetService {
         },
       });
 
+      await this.prisma.widget.update({
+        where: { id: widget_id },
+        data: {
+          refresh_rate: params.refresh_rate,
+        },
+      });
+
       await this.prisma.widgetParameter.deleteMany({
         where: {
           widget_id,

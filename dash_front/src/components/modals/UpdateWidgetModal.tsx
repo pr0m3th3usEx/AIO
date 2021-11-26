@@ -9,17 +9,24 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '@chakra-ui/modal';
+import { useToast } from '@chakra-ui/toast';
 import LabelWrapperInput from 'components/inputs/LabelWrapperInput';
 import { useFieldParameters } from 'hooks/useFieldParameters';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { WidgetParameter, WidgetParameterDto } from 'services/widget';
+import {
+  UpdateWidgetParameterDto,
+  useUpdateWidgetMutation,
+  WidgetParameter,
+  WidgetParameterDto,
+} from 'services/widget';
 
 interface ModalProps {
+  widget_id: string;
   parameters: WidgetParameter[];
   currentRefreshRate: number;
   onCancel: () => void;
-  onSubmit: (d: string) => void;
+  onClose: () => void;
   isOpen: boolean;
 }
 
@@ -28,16 +35,21 @@ type UpdateWidgetData = {
 };
 
 const UpdateWidgetModal = ({
+  widget_id,
   parameters,
   currentRefreshRate,
   onCancel,
-  onSubmit,
+  onClose,
   isOpen,
 }: ModalProps) => {
   const { widgetParameters, setParamElement } = useFieldParameters<
     WidgetParameterDto,
     WidgetParameter
   >(parameters);
+  const [
+    updateWidget,
+    { isSuccess: isUpdated, isError: isUpdateFailed, error: updateError },
+  ] = useUpdateWidgetMutation();
 
   const {
     handleSubmit,
@@ -49,6 +61,8 @@ const UpdateWidgetModal = ({
     },
   });
 
+  const toast = useToast();
+
   useEffect(() => {
     parameters.forEach((value, idx) => {
       setParamElement(idx, {
@@ -58,7 +72,27 @@ const UpdateWidgetModal = ({
     });
   }, [parameters]);
 
-  const onFormSubmit = () => {};
+  const onFormSubmit = handleSubmit((data: UpdateWidgetData) => {
+    const dto: UpdateWidgetParameterDto = {
+      widget_id,
+      refresh_rate: data.refreshRate,
+      parameters: widgetParameters,
+    };
+
+    updateWidget(dto);
+  });
+
+  if (isUpdated) {
+    onClose();
+  }
+
+  if (isUpdateFailed) {
+    toast({
+      status: 'error',
+      title: 'Update failed',
+      duration: 3000,
+    });
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={onCancel}>
@@ -81,11 +115,16 @@ const UpdateWidgetModal = ({
                   variant="light"
                   {...register('refreshRate', {
                     required: true,
-                    min: 0,
+                    min: 1,
                     valueAsNumber: true,
                   })}
                 />
               </LabelWrapperInput>
+              {errors.refreshRate?.type === 'min' && (
+                <Text color="red.500" fontSize="13px" fontWeight="600">
+                  The refresh rate must be positive
+                </Text>
+              )}
               {parameters.map((field, idx) => (
                 <LabelWrapperInput key={field.name} label={field.name}>
                   <Input

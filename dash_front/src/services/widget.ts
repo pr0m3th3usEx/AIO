@@ -69,6 +69,12 @@ export type WidgetConfiguration = {
   params: WidgetParameterConfiguration[];
 };
 
+export type UpdateWidgetParameterDto = {
+  widget_id: string;
+  refresh_rate: number;
+  parameters: WidgetParameterDto[];
+};
+
 export type Tweet = {
   created_at: Date;
   id: string;
@@ -124,6 +130,17 @@ const extendedApi = api.injectEndpoints({
       }),
       invalidatesTags: ['Widget'],
     }),
+    updateWidget: builder.mutation<Widget, UpdateWidgetParameterDto>({
+      query: (params) => ({
+        url: `/widgets/${params.widget_id}`,
+        method: 'PUT',
+        body: {
+          parameters: params.parameters,
+          refresh_rate: params.refresh_rate,
+        },
+      }),
+      invalidatesTags: ['Widget'],
+    }),
     getUserWidgets: builder.query<Widget[], void>({
       query: () => '/widgets/all',
       providesTags: ['Widget'],
@@ -132,4 +149,8 @@ const extendedApi = api.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useAddNewWidgetMutation, useGetUserWidgetsQuery } = extendedApi;
+export const {
+  useAddNewWidgetMutation,
+  useUpdateWidgetMutation,
+  useGetUserWidgetsQuery,
+} = extendedApi;

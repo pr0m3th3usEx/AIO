@@ -13,7 +13,6 @@ export function useFieldParameters<T, U>(widgets: U[] | undefined) {
   useEffect(() => {
     const newArr = new Array(widgets?.length ?? 0);
     setArray(newArr);
-    console.log(newArr.length);
   }, [widgets]);
 
   return { widgetParameters: arr, setParamElement: setElement };

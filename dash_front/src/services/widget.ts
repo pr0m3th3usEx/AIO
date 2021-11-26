@@ -14,6 +14,7 @@ export type WidgetType =
 
 export type WidgetParameter = {
   id: string;
+  name: string;
   widget_id: string;
   type: ParameterType;
   value_int: number | null;

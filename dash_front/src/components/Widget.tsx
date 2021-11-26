@@ -1,13 +1,15 @@
-import { Text, VStack } from '@chakra-ui/layout';
+import { Box, HStack, StackDivider, Text, VStack } from '@chakra-ui/layout';
 import { Spinner } from '@chakra-ui/spinner';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useGetServiceInfoQuery } from 'services/service';
 import { Widget as WidgetType } from 'services/widget';
 import ErrorIllustration from 'assets/error.svg';
 import { Image } from '@chakra-ui/image';
+import detailsIllustration from 'assets/details.svg';
 import CryptoWidget from './widgets/CryptoWidget';
 import SubredditWidget from './widgets/SubredditWidget';
 import UserTweetsWidget from './widgets/UserTweetsWidget';
+import UpdateWidgetModal from './modals/UpdateWidgetModal';
 
 const WidgetCanvas = ({ widget }: { widget: WidgetType }) => {
   if (widget.type === 'CRYPTO') {
@@ -68,6 +70,7 @@ const WidgetError = ({ activated }: { activated?: boolean }) => {
 };
 
 const Widget = ({ data }: { data: WidgetType }) => {
+  const [updateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
   const {
     data: service,
     isLoading,
@@ -82,13 +85,38 @@ const Widget = ({ data }: { data: WidgetType }) => {
     }
   }, [service, isLoading, isSuccess, isError, error]);
 
+  const openUpdateWidgetModal = () => {
+    setUpdateModalOpen(true);
+  };
+
   return (
     <VStack
       w={{ base: '100%', sm: '100%', md: 'auto' }}
       h="100%"
       bg="white"
+      spacing={0}
       borderRadius="12px"
     >
+      {updateModalOpen && (
+        <UpdateWidgetModal
+          currentRefreshRate={data.refresh_rate}
+          parameters={data.parameters}
+          onCancel={() => setUpdateModalOpen(false)}
+          onSubmit={(data) => {}}
+          isOpen={updateModalOpen}
+        />
+      )}
+
+      <HStack
+        w="100%"
+        h="40px"
+        justifyContent="flex-end"
+        padding="0 12px"
+        onClick={() => openUpdateWidgetModal()}
+      >
+        <Image src={detailsIllustration} w="24px" cursor="pointer" />
+      </HStack>
+      <Box border="1px solid" borderColor="gray.200" minW="100%" h="1px" />
       {isLoading && <Spinner size="xl" color="turquoise" thickness="4px" />}
       {((!isLoading && isError) || (service && !service.is_activated)) && (
         <WidgetError activated={service?.is_activated} />

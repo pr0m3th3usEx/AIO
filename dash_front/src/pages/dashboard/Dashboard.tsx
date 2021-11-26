@@ -10,7 +10,6 @@ import { useGetUserWidgetsQuery } from 'services/widget';
 
 const Dashboard: FC = (): JSX.Element => {
   const [addModalOpen, setAddModalOpen] = useState<boolean>(false);
-  const [updateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
   const toast = useToast();
   const {
     data: widgets,
@@ -37,10 +36,6 @@ const Dashboard: FC = (): JSX.Element => {
     setAddModalOpen(true);
   };
 
-  const openUpdateWidgetModal = () => {
-    setUpdateModalOpen(true);
-  };
-
   return (
     <VStack w="100%" align="start">
       {addModalOpen && (
@@ -48,14 +43,6 @@ const Dashboard: FC = (): JSX.Element => {
           onCancel={() => setAddModalOpen(false)}
           onClose={() => setAddModalOpen(false)}
           isOpen={addModalOpen}
-        />
-      )}
-
-      {updateModalOpen && (
-        <UpdateWidgetModal
-          onCancel={() => setUpdateModalOpen(false)}
-          onSubmit={(data) => {}}
-          isOpen={updateModalOpen}
         />
       )}
 

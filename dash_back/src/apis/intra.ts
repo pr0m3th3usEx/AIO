@@ -19,4 +19,10 @@ export class Intra
             return j.json();
         });
     }
+
+    module = async (module: string) => {
+        return await fetch(this.#autologin + "/module/2021/" + module + "/BAR-5-1/?format=json").then(j => {
+            return j.json();
+        });
+    }
 }

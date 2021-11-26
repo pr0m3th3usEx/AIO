@@ -13,4 +13,10 @@ export class Intra
             return j.json();
         });
     }
+
+    user = async () => {
+        return await fetch(this.#autologin + "/user/?format=json").then(j => {
+            return j.json();
+        });
+    }
 }

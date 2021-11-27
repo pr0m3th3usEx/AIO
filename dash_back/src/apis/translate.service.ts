@@ -250,13 +250,3 @@ export class TranslateService {
       });
   };
 }
-
-/*
-const t = new TranslateService();
-
-t.translate("Hello World", t.get_language_code("english"), t.get_language_code("french")).then(text => {
-    console.log(text);
-}).catch(error => {
-    console.log(error);
-});
-*/

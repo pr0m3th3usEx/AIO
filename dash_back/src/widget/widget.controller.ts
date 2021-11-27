@@ -8,8 +8,11 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
+import { text } from 'express';
+import { Translated } from 'src/apis/translate.service';
 import { JwtAuthGuard } from 'src/auth/local/jwt-auth.guard';
 import { CleanedUser } from 'src/user/user.dto';
 import { UserDec } from 'src/utils/user.decorator';
@@ -64,5 +67,14 @@ export class WidgetController {
   @Get('/:id/refresh')
   async refreshWidget(@Param('id') widgetId: string): Promise<any> {
     return this.widgetService.refreshWidget(widgetId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/:id/translation')
+  async translate(
+    @Param('id') widgetId: string,
+    @Query('text') text: string,
+  ): Promise<Translated> {
+    return this.widgetService.translate(widgetId, text);
   }
 }

@@ -35,7 +35,7 @@ import {
   UserTweets,
 } from 'src/apis/twitter.service';
 import { Weather, WeatherService } from 'src/apis/weather.service';
-import { TranslateService } from 'src/apis/translate.service';
+import { Translated, TranslateService } from 'src/apis/translate.service';
 import {
   IntraService,
   ModuleInfo as IntraModuleInfo,
@@ -381,6 +381,35 @@ export class WidgetService {
       } else {
         throw err;
       }
+    }
+  }
+
+  async translate(widgetId: string, text: string): Promise<Translated> {
+    try {
+      const widget = await this.prisma.widget.findUnique({
+        where: { id: widgetId },
+        include: {
+          parameters: true,
+          service: true,
+        },
+      });
+
+      console.log(
+        await this.translateService.translate(
+          text,
+          this.translateService.get_language_code(
+            widget.parameters[0].value_string,
+          ),
+          this.translateService.get_language_code(
+            widget.parameters[1].value_string,
+          ),
+        ),
+      );
+      return {
+        text: 'good',
+      };
+    } catch (err) {
+      throw new NotFoundException('Widget not found');
     }
   }
 }

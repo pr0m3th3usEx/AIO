@@ -131,6 +131,10 @@ export type Post = {
   };
 };
 
+export type Translation = {
+  text: string;
+};
+
 const extendedApi = api.injectEndpoints({
   endpoints: (builder) => ({
     addNewWidget: builder.mutation<Widget, CreateWidgetDto>({
@@ -167,6 +171,10 @@ const extendedApi = api.injectEndpoints({
       query: () => '/widgets/all',
       providesTags: ['Widget'],
     }),
+    translate: builder.mutation<Translation, { id: string; text: string }>({
+      query: (params) =>
+        `/widgets/${params.id}/translation?text=${params.text}`,
+    }),
   }),
   overrideExisting: false,
 });
@@ -177,4 +185,5 @@ export const {
   useRemoveWidgetMutation,
   useRefreshWidgetMutation,
   useGetUserWidgetsQuery,
+  useTranslateMutation,
 } = extendedApi;

@@ -14,6 +14,7 @@ import SubredditWidget from './widgets/SubredditWidget';
 import UserTweetsWidget from './widgets/UserTweetsWidget';
 import UpdateWidgetModal from './modals/UpdateWidgetModal';
 import { toast, useToast } from '@chakra-ui/toast';
+import TranslatorWidget from './widgets/TranslatorWidget';
 
 const WidgetError = ({
   activated,
@@ -100,7 +101,18 @@ const WidgetCanvas = ({
   }
   // if (widget.type === 'CITY_TEMPERATURE')
   // if (widget.type === 'INTRA')
-  // if (widget.type === 'TRANSLATOR')
+  if (widget.type === 'TRANSLATOR') {
+    return (
+      <TranslatorWidget
+        id={widget.id}
+        serviceId={widget.service_id}
+        lastRefresh={widget.last_refresh}
+        refreshRate={widget.refresh_rate}
+        parameters={widget.parameters}
+        // data={data}
+      />
+    );
+  }
   return <></>;
 };
 
@@ -150,7 +162,6 @@ const Widget = ({ data }: { data: WidgetType }) => {
         if (refreshError.status !== 401) {
           setFetchError(true);
         }
-        // console.log(refreshError);
       }
     }
   }, [

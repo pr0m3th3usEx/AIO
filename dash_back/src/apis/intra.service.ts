@@ -67,13 +67,10 @@ export class IntraService {
       autologin + '/module/board/?format=json&start=2021-01-01&end=2022-12-31',
     ).then((j) => {
       return j.json().then((element) => {
-        let modules = [];
-        element.forEach((element) => {
-          modules.push({
-            code: element['codemodule'],
-            title: element['title_module']
-          });
-        });
+        const modules = element.map((e) => ({
+          code: e['codemodule'],
+          title: e['title_module']
+        }))
         return modules.filter(({ code }, index) => !modules.map(o => o.code).includes(code, index + 1));
       });
     });
@@ -104,10 +101,11 @@ export class IntraService {
   };
 }
 
-
+/*
 const i = new IntraService();
 i.list_module("https://intra.epitech.eu/auth-1e03af3cf61e6c5296b5482ca7f712c3e0d97409").then(j => {
   console.log(j);
 }).catch(e => {
   console.log(e);
 });
+*/

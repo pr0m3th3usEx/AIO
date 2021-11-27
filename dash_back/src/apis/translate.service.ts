@@ -110,8 +110,8 @@ export const available_languages = [
 ];
 
 export type Translated = {
-  text: string
-}
+  text: string;
+};
 
 @Injectable()
 export class TranslateService {
@@ -225,7 +225,7 @@ export class TranslateService {
     };
 
     language = language.toLowerCase();
-    let keys = Object.keys(languages).filter((key): boolean|string => {
+    const keys = Object.keys(languages).filter((key): boolean | string => {
       if (typeof languages[key] !== 'string') {
         return false;
       }
@@ -234,11 +234,15 @@ export class TranslateService {
     return keys[0] || null;
   };
 
-  translate = async (text: string, from: string, to: string): Promise<Translated> => {
+  translate = async (
+    text: string,
+    from: string,
+    to: string,
+  ): Promise<Translated> => {
     return await translation(text, { from, to })
       .then((response) => {
         return {
-          text: response.text
+          text: response.text,
         };
       })
       .catch((error) => {

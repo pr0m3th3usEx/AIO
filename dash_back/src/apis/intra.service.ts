@@ -2,39 +2,39 @@ import { Injectable } from '@nestjs/common';
 import fetch from 'node-fetch';
 
 export type UserInfos = {
-  email: string,
-  firstname: string,
-  lastname: string,
-  picture: string,
-  year: string,
-  promo: number,
-  location: string,
-  credits: number,
-  gpa: number
-}
+  email: string;
+  firstname: string;
+  lastname: string;
+  picture: string;
+  year: string;
+  promo: number;
+  location: string;
+  credits: number;
+  gpa: number;
+};
 
 export type ModuleListInfos = {
-  code: string
-  title: string,
-}
+  code: string;
+  title: string;
+};
 
 export type Activity = {
-  begin: string,
-  end: string,
-  title: string,
-  registered: boolean
-}
+  begin: string;
+  end: string;
+  title: string;
+  registered: boolean;
+};
 
 export type ModuleInfo = {
-  title: string,
-  begin: string,
-  end: string,
-  credits: string,
-  description: string,
-  competences: string
-  grade: string,
-  activities: Activity[]
-}
+  title: string;
+  begin: string;
+  end: string;
+  credits: string;
+  description: string;
+  competences: string;
+  grade: string;
+  activities: Activity[];
+};
 
 @Injectable()
 export class IntraService {
@@ -46,7 +46,7 @@ export class IntraService {
 
   user = async (autologin: string): Promise<UserInfos> => {
     return await fetch(autologin + '/user/?format=json').then((j) => {
-      return j.json().then(infosuser => {
+      return j.json().then((infosuser) => {
         return {
           email: infosuser['login'],
           firstname: infosuser['firstname'],
@@ -56,22 +56,25 @@ export class IntraService {
           promo: infosuser['promo'],
           location: infosuser['location'],
           credits: infosuser['credits'],
-          gpa: infosuser['gpa'][0]['gpa']
-        }
+          gpa: infosuser['gpa'][0]['gpa'],
+        };
       });
     });
   };
 
-  list_module = async (autologin: string): Promise<ModuleListInfos[]> => {
+  listModule = async (autologin: string): Promise<ModuleListInfos[]> => {
     return await fetch(
       autologin + '/module/board/?format=json&start=2021-01-01&end=2022-12-31',
     ).then((j) => {
       return j.json().then((element) => {
         const modules = element.map((e) => ({
           code: e['codemodule'],
-          title: e['title_module']
-        }))
-        return modules.filter(({ code }, index) => !modules.map(o => o.code).includes(code, index + 1));
+          title: e['title_module'],
+        }));
+        return modules.filter(
+          ({ code }, index) =>
+            !modules.map((o) => o.code).includes(code, index + 1),
+        );
       });
     });
   };
@@ -89,13 +92,13 @@ export class IntraService {
           description: element['description'],
           competences: element['competence'],
           grade: element['student_grade'],
-          activities: element['activites'].map(activity => ({
+          activities: element['activites'].map((activity) => ({
             begin: activity['start'],
             end: activity['end'],
             title: activity['title'],
-            registered: (activity['register'] === '1') ? true : false
-          }))
-        }
+            registered: activity['register'] === '1' ? true : false,
+          })),
+        };
       });
     });
   };

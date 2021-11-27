@@ -3,9 +3,9 @@ import { WEATHER_API_KEY } from 'src/config';
 import fetch from 'node-fetch';
 
 export type Weather = {
-  weat: string,
-  temp: number
-}
+  weat: string;
+  temp: number;
+};
 
 @Injectable()
 export class WeatherService {
@@ -14,7 +14,7 @@ export class WeatherService {
       'https://api.openweathermap.org/data/2.5/weather?q=' +
         city +
         '&appid=' +
-        WEATHER_API_KEY
+        WEATHER_API_KEY,
     )
       .then((info) => {
         return info.json();
@@ -32,9 +32,9 @@ export class WeatherService {
       });
   };
 
-  futur = async (city: string, days: number = 7): Promise<Weather[]> => {
+  futur = async (city: string, days = 7): Promise<Weather[]> => {
     if (days < 0 || days > 16) {
-      throw Error("Invalid days number");
+      throw Error('Invalid days number');
     }
     return await fetch(
       'https://api.openweathermap.org/data/2.5/forecast?q=' +
@@ -42,13 +42,13 @@ export class WeatherService {
         '&cnt=' +
         days +
         '&appid=' +
-        WEATHER_API_KEY
+        WEATHER_API_KEY,
     )
       .then((info) => {
         return info.json();
       })
       .then((content) => {
-        let weather = [];
+        const weather = [];
         content.list.forEach((element) => {
           weather.push({
             weat: element.weather[0].main,

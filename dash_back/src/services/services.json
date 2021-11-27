@@ -81,7 +81,7 @@
         "description": "Fetch last tweets of a specific user",
         "params": [
           {
-            "name": "username",
+            "name": "Username",
             "type": "string"
           }
         ]
@@ -93,9 +93,20 @@
     "oauth2": true,
     "widgets": [
       {
-        "name": "intra_info",
-        "type": "INTRA_INFO",
-        "description": "Display Current Epitech Projects",
+        "name": "intra_module_info",
+        "type": "INTRA_MODULE_INFO",
+        "description": "Show information about specified module",
+        "params": [
+          {
+            "name": "ModuleName",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "intra_user_info",
+        "type": "INTRA_USER_INFO",
+        "description": "Show user information",
         "params": []
       }
     ]

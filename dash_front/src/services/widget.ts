@@ -8,7 +8,8 @@ export type WidgetType =
   | 'TRANSLATOR'
   | 'CITY_TEMPERATURE'
   | 'CRYPTO'
-  | 'INTRA'
+  | 'INTRA_MODULE_INFO'
+  | 'INTRA_USER_INFO'
   | 'USER_TWEETS'
   | 'SUBREDDIT';
 

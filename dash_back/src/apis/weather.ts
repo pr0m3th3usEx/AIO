@@ -1,12 +1,11 @@
-import getenv from "getenv.ts";
 const fetch = require("node-fetch");
 
 export class Weather
 {
-    #API_KEY = getenv.string("WEATHER_KEY");
+    #API_KEY = "53a136d489a2b9b853526d68e0f642ab";
 
     current = async (city: string) => {
-        await fetch("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + this.#API_KEY).then(info => {
+        return await fetch("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + this.#API_KEY).then(info => {
             return info.json();
         }).then(content => {
             return [{
@@ -19,7 +18,7 @@ export class Weather
     }
 
     futur = async (city: string, days: number = 7) => {
-        await fetch("https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + this.#API_KEY).then(info => {
+        return await fetch("https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + this.#API_KEY).then(info => {
             return info.json();
         }).then(content => {
             let weather = [];
@@ -37,3 +36,8 @@ export class Weather
         });
     }
 }
+
+/*
+const w = new Weather();
+w.current("paris").then(r => console.log(r));
+*/

@@ -84,16 +84,7 @@ export class IntraService {
     return await fetch(
       autologin + '/module/2021/' + module + '/BAR-5-1/?format=json',
     ).then((j) => {
-      return j.json().then((element) => {
-        let buffer = [];
-        element['activites'].forEach(activity => {
-          buffer.push({
-            begin: activity['start'],
-            end: activity['end'],
-            title: activity['title'],
-            registered: (activity['register'] === '1') ? true : false
-          });
-        });
+      return j.json().then((element: any) => {
         return {
           title: element['title'],
           begin: element['begin'],
@@ -102,18 +93,22 @@ export class IntraService {
           description: element['description'],
           competences: element['competence'],
           grade: element['student_grade'],
-          activities: buffer
+          activities: element['activites'].map(activity => ({
+            begin: activity['start'],
+            end: activity['end'],
+            title: activity['title'],
+            registered: (activity['register'] === '1') ? true : false
+          }))
         }
       });
     });
   };
 }
 
-/*
+
 const i = new IntraService();
-i.module("B-DEV-500", "https://intra.epitech.eu/auth-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX").then(j => {
+i.module("B-DEV-500", "https://intra.epitech.eu/auth-1e03af3cf61e6c5296b5482ca7f712c3e0d97409").then(j => {
   console.log(j);
 }).catch(e => {
   console.log(e);
 });
-*/

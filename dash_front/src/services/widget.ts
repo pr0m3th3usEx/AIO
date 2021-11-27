@@ -161,6 +161,7 @@ const extendedApi = api.injectEndpoints({
     }),
     refreshWidget: builder.mutation<void, string>({
       query: (params) => `/widgets/${params}/refresh`,
+      invalidatesTags: ['Widget'],
     }),
     getUserWidgets: builder.query<Widget[], void>({
       query: () => '/widgets/all',

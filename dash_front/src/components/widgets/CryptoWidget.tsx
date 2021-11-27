@@ -1,4 +1,5 @@
 import { Text, VStack } from '@chakra-ui/layout';
+import { Skeleton } from '@chakra-ui/react';
 import { ExchangeRate, WidgetParameter } from 'services/widget';
 
 interface WidgetProps {
@@ -18,10 +19,6 @@ const CryptoWidget = ({
   refreshRate,
   data,
 }: WidgetProps) => {
-  // setInterval(async () => {
-
-  // }, 1000);
-
   return (
     <VStack
       align="start"
@@ -46,9 +43,13 @@ const CryptoWidget = ({
         </Text>
       </VStack>
 
-      <Text color="black" fontWeight="bold" fontSize="24px">
-        1 {parameters[0].value_string} = 60000 USD
-      </Text>
+      {data === undefined ? (
+        <Skeleton />
+      ) : (
+        <Text color="black" fontWeight="bold" fontSize="24px">
+          1 {data.asset_id_base} = {data.rate.toFixed(2)} {data.asset_id_quote}
+        </Text>
+      )}
     </VStack>
   );
 };

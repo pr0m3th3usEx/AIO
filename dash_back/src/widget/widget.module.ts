@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ScheduleModule } from '@nestjs/schedule';
-import { CryptoService } from 'src/apis/crypto/crypto.service';
-import { RedditService } from 'src/apis/reddit/reddit.service';
-import { TwitterService } from 'src/apis/twitter/twitter.service';
+import { CryptoService } from 'src/apis/crypto.service';
+import { IntraService } from 'src/apis/intra.service';
+import { RedditService } from 'src/apis/reddit.service';
+import { TranslateService } from 'src/apis/translate.service';
+import { TwitterService } from 'src/apis/twitter.service';
+import { WeatherService } from 'src/apis/weather.service';
 import { JwtStrategy } from 'src/auth/local/jwt.stategy';
 import { JWT_SECRET } from 'src/config';
 import { PrismaModule } from 'src/prisma/prisma.module';
@@ -28,6 +31,9 @@ import { WidgetService } from './widget.service';
     CryptoService,
     RedditService,
     TwitterService,
+    IntraService,
+    WeatherService,
+    TranslateService,
   ],
   exports: [WidgetService],
 })

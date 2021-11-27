@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { RedditService } from 'src/apis/reddit/reddit.service';
-import { TwitterService } from 'src/apis/twitter/twitter.service';
+import { RedditService } from 'src/apis/reddit.service';
+import { TwitterService } from 'src/apis/twitter.service';
 import { JwtStrategy } from 'src/auth/local/jwt.stategy';
 import { JWT_SECRET } from 'src/config';
 import { PrismaModule } from 'src/prisma/prisma.module';

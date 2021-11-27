@@ -4,8 +4,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { RedditService } from 'src/apis/reddit/reddit.service';
-import { TwitterService } from 'src/apis/twitter/twitter.service';
+import { RedditService } from 'src/apis/reddit.service';
+import { TwitterService } from 'src/apis/twitter.service';
 import { FRONT_END_URL, REDDIT_APP_ID } from 'src/config';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';

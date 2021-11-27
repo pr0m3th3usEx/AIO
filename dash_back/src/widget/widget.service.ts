@@ -25,19 +25,17 @@ import {
   WidgetParameterDto,
 } from './widget.dto';
 import AVAILABLE_SERVICES from 'src/services/services.json';
-import {
-  List,
-  Post,
-  RedditService,
-  Thing,
-} from 'src/apis/reddit/reddit.service';
-import { CryptoService, ExchangeRate } from 'src/apis/crypto/crypto.service';
+import { List, Post, RedditService, Thing } from 'src/apis/reddit.service';
+import { CryptoService, ExchangeRate } from 'src/apis/crypto.service';
 import {
   Tweet,
   TwitterService,
   TwitterTweets,
   UserTweets,
-} from 'src/apis/twitter/twitter.service';
+} from 'src/apis/twitter.service';
+import { WeatherService } from 'src/apis/weather.service';
+import { TranslateService } from 'src/apis/translate.service';
+import { IntraService } from 'src/apis/intra.service';
 
 @Injectable()
 export class WidgetService {
@@ -49,6 +47,9 @@ export class WidgetService {
     private cryptoService: CryptoService,
     private redditService: RedditService,
     private twitterService: TwitterService,
+    private intraService: IntraService,
+    private weatherService: WeatherService,
+    private translateService: TranslateService,
   ) {}
 
   @Interval(1000)

@@ -28,5 +28,9 @@ export const TWITTER_BEARER_TOKEN = env
   .required(true)
   .asString();
 
+export const WEATHER_API_KEY = env
+  .get('WEATHER_API_KEY')
+  .required(true)
+  .asString();
 export const COINAPI_KEY = env.get('COINAPI_KEY').required(true).asString();
 export const FRONT_END_URL = env.get('FRONT_END_URL').required(true).asString();

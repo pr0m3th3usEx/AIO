@@ -50,7 +50,7 @@ export class RedditService {
   private OAUTH_URL = 'https://www.reddit.com/api/v1/authorize';
   private STATE = 'random';
   private instance = axios.create({
-    baseURL: 'https://www.reddit.com/api',
+    baseURL: 'https://oauth.reddit.com',
   });
 
   getAuthorizationUrl(): string {
@@ -63,9 +63,7 @@ export class RedditService {
     }
 
     try {
-      const res = await this.instance.post<
-        RedditAccessToken | RedditOAuthError
-      >(
+      const res = await axios.post<RedditAccessToken | RedditOAuthError>(
         '/v1/access_token',
         qs.stringify({
           grant_type: 'authorization_code',
@@ -97,19 +95,15 @@ export class RedditService {
   async getNewSubredditPosts(
     sr: string,
     access_token: string,
+    limit = 25,
   ): Promise<Thing<List<Post>>> {
     return this.instance
-      .get(`r/${sr}/new`, {
-        data: {
-          after: null,
-          before: null,
-          limit: 25,
-          count: null,
-        },
+      .get(`r/${sr}/new?after=null&count=limit=${limit}`, {
         headers: {
           Authorization: 'Bearer ' + access_token,
         },
       })
-      .then((response) => response.data);
+      .then((response) => response.data)
+      .catch((err) => console.log(err));
   }
 }

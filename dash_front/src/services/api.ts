@@ -5,7 +5,7 @@ import { RootState } from 'utils/store';
 const API_URL = env.get('REACT_APP_API_URL').required(true).asString();
 
 export const api = createApi({
-  tagTypes: ['User'],
+  tagTypes: ['User', 'Widget', 'Service'],
   reducerPath: 'dashApi',
   baseQuery: fetchBaseQuery({
     baseUrl: API_URL,

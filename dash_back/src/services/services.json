@@ -1,0 +1,103 @@
+[
+  {
+    "name": "WEATHER",
+    "oauth2": false,
+    "widgets": [
+      {
+        "name": "city_temperature",
+        "type": "CITY_TEMPERATURE",
+        "description": "Display temperature for a city",
+        "params": [
+          {
+            "name": "City",
+            "type": "string"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "GOOGLE",
+    "oauth2": false,
+    "widgets": [
+      {
+        "name": "translator",
+        "type": "TRANSLATOR",
+        "description": "Translator from a language to another",
+        "params": [
+          {
+            "name": "Source",
+            "type": "string"
+          },
+          {
+            "name": "Destination",
+            "type": "string"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "REDDIT",
+    "oauth2": true,
+    "widgets": [
+      {
+        "name": "subreddit",
+        "type": "SUBREDDIT",
+        "description": "Display specific subreddit new posts",
+        "params": [
+          {
+            "name": "Subreddit",
+            "type": "string"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "CRYPTO",
+    "oauth2": false,
+    "widgets": [
+      {
+        "name": "crypto_price",
+        "type": "CRYPTO",
+        "description": "Get current price of the cryptocurrency",
+        "params": [
+          {
+            "name": "CryptoName",
+            "type": "string"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "TWITTER",
+    "oauth2": false,
+    "widgets": [
+      {
+        "name": "user_tweets",
+        "type": "USER_TWEETS",
+        "description": "Fetch last tweets of a specific user",
+        "params": [
+          {
+            "name": "username",
+            "type": "string"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "INTRANET",
+    "oauth2": true,
+    "widgets": [
+      {
+        "name": "intra_info",
+        "type": "INTRA_INFO",
+        "description": "Display Current Epitech Projects",
+        "params": []
+      }
+    ]
+  }
+]

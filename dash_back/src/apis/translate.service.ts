@@ -237,7 +237,9 @@ export class TranslateService {
   translate = async (text: string, from: string, to: string): Promise<Translated> => {
     return await translation(text, { from, to })
       .then((response) => {
-        return response.text;
+        return {
+          text: response.text
+        };
       })
       .catch((error) => {
         throw new Error(error);
@@ -246,7 +248,7 @@ export class TranslateService {
 }
 
 /*
-const t = new Translate();
+const t = new TranslateService();
 
 t.translate("Hello World", t.get_language_code("english"), t.get_language_code("french")).then(text => {
     console.log(text);

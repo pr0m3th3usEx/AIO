@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 
 export class Weather
 {
-    #API_KEY = "53a136d489a2b9b853526d68e0f642ab";
+    #API_KEY = "";
 
     current = async (city: string) => {
         return await fetch("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + this.#API_KEY).then(info => {

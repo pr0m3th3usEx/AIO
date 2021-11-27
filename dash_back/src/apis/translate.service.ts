@@ -109,6 +109,10 @@ export const available_languages = [
   'Zulu',
 ];
 
+export type Translated = {
+  text: string
+}
+
 @Injectable()
 export class TranslateService {
   get_language_code = (language: string) => {
@@ -231,7 +235,7 @@ export class TranslateService {
     return keys[0] || null;
   };
 
-  translate = async (text: string, from: string, to: string) => {
+  translate = async (text: string, from: string, to: string): Promise<Translated> => {
     return await translation(text, { from, to })
       .then((response) => {
         return response.text;

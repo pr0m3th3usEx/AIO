@@ -15,14 +15,16 @@ import UserTweetsWidget from './widgets/UserTweetsWidget';
 import UpdateWidgetModal from './modals/UpdateWidgetModal';
 import { toast, useToast } from '@chakra-ui/toast';
 
-const WidgetCanvas = ({ widget }: { widget: WidgetType }) => {
+const WidgetCanvas = ({ widget, data }: { widget: WidgetType; data: any }) => {
   if (widget.type === 'CRYPTO') {
     return (
       <CryptoWidget
         id={widget.id}
         serviceId={widget.service_id}
+        lastRefresh={widget.last_refresh}
         refreshRate={widget.refresh_rate}
         parameters={widget.parameters}
+        data={data}
       />
     );
   }
@@ -31,9 +33,11 @@ const WidgetCanvas = ({ widget }: { widget: WidgetType }) => {
     return (
       <SubredditWidget
         id={widget.id}
+        lastRefresh={widget.last_refresh}
         serviceId={widget.service_id}
         refreshRate={widget.refresh_rate}
         parameters={widget.parameters}
+        data={data}
       />
     );
   }
@@ -42,8 +46,10 @@ const WidgetCanvas = ({ widget }: { widget: WidgetType }) => {
       <UserTweetsWidget
         id={widget.id}
         serviceId={widget.service_id}
+        lastRefresh={widget.last_refresh}
         refreshRate={widget.refresh_rate}
         parameters={widget.parameters}
+        data={data}
       />
     );
   }
@@ -76,6 +82,8 @@ const WidgetError = ({ activated }: { activated?: boolean }) => {
 const Widget = ({ data }: { data: WidgetType }) => {
   const [currentWidgetData, setCurrentWidgetData] = useState(data);
   const [updateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
+  const [refreshedData, setRefreshedData] = useState<any>();
+
   const {
     data: service,
     isLoading,
@@ -109,18 +117,17 @@ const Widget = ({ data }: { data: WidgetType }) => {
   useEffect(() => {
     if (!isRefreshing) {
       if (isRefreshSuccess) {
-        console.log(refreshData);
+        setRefreshedData(refreshData);
       }
-
       if (isRefreshError) {
-        console.log(refreshError);
+        // console.log(refreshError);
       }
     }
   }, [
     isRefreshing,
     isRefreshSuccess,
-    isRefreshError,
     refreshData,
+    isRefreshError,
     refreshError,
   ]);
 
@@ -166,11 +173,7 @@ const Widget = ({ data }: { data: WidgetType }) => {
         <WidgetError activated={service?.is_activated} />
       )}
       {!isLoading && isSuccess && service?.is_activated && (
-        <WidgetCanvas
-          widget={currentWidgetData}
-          // isLoading={isRefreshLoading}
-          // data={refreshed}
-        />
+        <WidgetCanvas widget={currentWidgetData} data={refreshedData} />
       )}
     </VStack>
   );

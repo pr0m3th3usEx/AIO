@@ -1,18 +1,22 @@
 import { Text, VStack } from '@chakra-ui/layout';
-import { WidgetParameter } from 'services/widget';
+import { ExchangeRate, WidgetParameter } from 'services/widget';
 
 interface WidgetProps {
   id: string;
   serviceId: string;
+  lastRefresh: Date | null;
   parameters: WidgetParameter[];
   refreshRate: number;
+  data?: ExchangeRate;
 }
 
 const CryptoWidget = ({
   id,
   serviceId,
+  lastRefresh,
   parameters,
   refreshRate,
+  data,
 }: WidgetProps) => {
   // setInterval(async () => {
 
@@ -38,7 +42,7 @@ const CryptoWidget = ({
           fontSize={{ base: '13px', sm: '13px', md: '14px', lg: '16px' }}
           opacity="0.54"
         >
-          Last refresh:
+          Last refresh: {lastRefresh}
         </Text>
       </VStack>
 

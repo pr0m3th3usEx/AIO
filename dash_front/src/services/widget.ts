@@ -32,6 +32,7 @@ export type Widget = {
   refresh_rate: number;
   created_at: Date;
   updated_at: Date;
+  last_refresh: Date | null;
   parameters: WidgetParameter[];
 };
 
@@ -39,6 +40,13 @@ export type AddWidgetFields = {
   refresh_rate: number;
   type: WidgetType;
   serviceName: ServiceType;
+};
+
+export type ExchangeRate = {
+  time: Date;
+  asset_id_base: string;
+  asset_id_quote: string;
+  rate: number;
 };
 
 export class CreateWidgetDto {
@@ -110,15 +118,17 @@ export type List<T> = {
 };
 
 export type Post = {
-  author: string;
-  subreddit: string;
-  title: string;
-  url: string;
-  media?: any;
-  score: number;
-  likes: number;
-  clicked: boolean;
-  thumbnail: string;
+  data: {
+    author: string;
+    subreddit: string;
+    title: string;
+    url: string;
+    media?: any;
+    score: number;
+    likes: number;
+    clicked: boolean;
+    thumbnail: string;
+  };
 };
 
 const extendedApi = api.injectEndpoints({

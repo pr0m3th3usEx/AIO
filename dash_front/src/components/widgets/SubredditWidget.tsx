@@ -1,5 +1,6 @@
 import { Image } from '@chakra-ui/image';
 import { HStack, Link, StackDivider, Text, VStack } from '@chakra-ui/layout';
+import { Skeleton } from '@chakra-ui/skeleton';
 import {
   WidgetParameter,
   Post as PostType,
@@ -10,10 +11,10 @@ import {
 interface WidgetProps {
   id: string;
   serviceId: string;
+  lastRefresh: Date | null;
   parameters: WidgetParameter[];
   refreshRate: number;
-  // isLoading: boolean;
-  // data: Thing<List<PostType>>;
+  data?: Thing<List<PostType>>;
 }
 
 const Post = ({
@@ -26,7 +27,17 @@ const Post = ({
   likes,
   clicked,
   thumbnail,
-}: PostType) => {
+}: {
+  author: string;
+  subreddit: string;
+  title: string;
+  url: string;
+  media?: string;
+  score: number;
+  likes: number;
+  clicked: boolean;
+  thumbnail: string;
+}) => {
   return (
     <VStack
       w="100%"
@@ -48,26 +59,27 @@ const Post = ({
           </Text>
         </HStack>
       </VStack>
-      <Text color="black">
-        <Text as="span" color="grey">
-          Link:&nbsp;
-          <Link href={url} isExternal>
-            {url.length < 40 ? url : url.substr(0, 40) + '...'}
-          </Link>
+      {url && (
+        <Text color="black">
+          <Text as="span" color="grey">
+            Link:&nbsp;
+            <Link href={url} isExternal>
+              {url.length < 40 ? url : url.substr(0, 40) + '...'}
+            </Link>
+          </Text>
         </Text>
-      </Text>
+      )}
     </VStack>
   );
 };
-
 const SubredditWidget = ({
   id,
   serviceId,
+  lastRefresh,
   parameters,
   refreshRate,
-}: // isLoading,
-// data,
-WidgetProps) => {
+  data,
+}: WidgetProps) => {
   return (
     <VStack
       align="start"
@@ -91,7 +103,7 @@ WidgetProps) => {
           fontSize={{ base: '13px', sm: '13px', md: '14px', lg: '16px' }}
           opacity="0.54"
         >
-          Last refresh:
+          Last refresh: {lastRefresh}
         </Text>
       </VStack>
 
@@ -103,36 +115,25 @@ WidgetProps) => {
         overflowX="hidden"
         divider={<StackDivider borderColor="gray.200" />}
       >
-        <Post
-          author="u/DrinkMoreCodeMore"
-          subreddit="r/Technology"
-          title="A North Korean man who smuggled 'Squid Game' into the country is to be executed by firing squad and a high-school student who bought a USB drive with the show will be jailed for life, report says"
-          url="https://www.businessinsider.com/north-korea-execution-life-sentence-hard-labor-squid-game-2021-11"
-          score={10}
-          likes={15}
-          clicked={false}
-          thumbnail="https://b.thumbs.redditmedia.com/_XcbGJpCec_DGeeneAl69zAS3acpaylDI_RriHpjINI.jpg"
-        />
-        <Post
-          author="u/DrinkMoreCodeMore"
-          subreddit="r/Technology"
-          title="A North Korean man who smuggled 'Squid Game' into the country is to be executed by firing squad and a high-school student who bought a USB drive with the show will be jailed for life, report says"
-          url="https://www.businessinsider.com/north-korea-execution-life-sentence-hard-labor-squid-game-2021-11"
-          score={10}
-          likes={15}
-          clicked={false}
-          thumbnail="https://b.thumbs.redditmedia.com/_XcbGJpCec_DGeeneAl69zAS3acpaylDI_RriHpjINI.jpg"
-        />
-        <Post
-          author="u/DrinkMoreCodeMore"
-          subreddit="r/Technology"
-          title="A North Korean man who smuggled 'Squid Game' into the country is"
-          url="https://www.businessinsider.com/north-korea-execution-life-sentence-hard-labor-squid-game-2021-11"
-          score={10}
-          likes={15}
-          clicked={false}
-          thumbnail="https://b.thumbs.redditmedia.com/_XcbGJpCec_DGeeneAl69zAS3acpaylDI_RriHpjINI.jpg"
-        />
+        {data === undefined ? (
+          <Skeleton />
+        ) : (
+          data.data.children.map((post) => {
+            return (
+              <Post
+                key={post.data.title}
+                subreddit={post.data.subreddit}
+                author={post.data.author}
+                title={post.data.title}
+                url={post.data.url}
+                score={post.data.score}
+                likes={post.data.likes}
+                clicked={post.data.clicked}
+                thumbnail={post.data.thumbnail}
+              />
+            );
+          })
+        )}
       </VStack>
     </VStack>
   );

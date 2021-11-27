@@ -103,7 +103,6 @@ export class RedditService {
           Authorization: 'Bearer ' + access_token,
         },
       })
-      .then((response) => response.data)
-      .catch((err) => console.log(err));
+      .then((response) => response.data);
   }
 }

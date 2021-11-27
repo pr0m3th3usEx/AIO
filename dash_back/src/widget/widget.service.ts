@@ -36,7 +36,11 @@ import {
 } from 'src/apis/twitter.service';
 import { Weather, WeatherService } from 'src/apis/weather.service';
 import { TranslateService } from 'src/apis/translate.service';
-import { IntraService, ModuleInfo } from 'src/apis/intra.service';
+import {
+  IntraService,
+  ModuleInfo as IntraModuleInfo,
+  UserInfos as IntraUserInfos,
+} from 'src/apis/intra.service';
 
 @Injectable()
 export class WidgetService {
@@ -315,7 +319,12 @@ export class WidgetService {
   async refreshWidget(
     widgetId: string,
   ): Promise<
-    Thing<List<Post>> | ExchangeRate | UserTweets | ModuleInfo | Weather[]
+    | Thing<List<Post>>
+    | ExchangeRate
+    | UserTweets
+    | IntraModuleInfo
+    | Weather[]
+    | IntraUserInfos
   > {
     try {
       const widget = await this.prisma.widget.findUnique({
@@ -351,11 +360,14 @@ export class WidgetService {
             widget.parameters[0].value_string,
           );
         }
-        if (widget.type === 'INTRA_INFO') {
+        if (widget.type === 'INTRA_MODULE_INFO') {
           return this.intraService.module(
             widget.parameters[0].value_string,
             widget.service.access_token,
           );
+        }
+        if (widget.type === 'INTRA_USER_INFO') {
+          return this.intraService.user(widget.service.access_token);
         }
         if (widget.type === 'CITY_TEMPERATURE') {
           return this.weatherService.futur(widget.parameters[0].value_string);

@@ -63,6 +63,7 @@ export class WeatherService {
   };
 }
 
-
+/*
 const w = new WeatherService();
 w.futur("paris", 16).then(r => console.log(r));
+*/

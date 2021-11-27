@@ -1,9 +1,8 @@
 import { Button } from '@chakra-ui/button';
-import { Box, Grid, HStack, Text, VStack } from '@chakra-ui/layout';
+import { Grid, HStack, Text, VStack } from '@chakra-ui/layout';
 import { Skeleton } from '@chakra-ui/skeleton';
 import { useToast } from '@chakra-ui/toast';
 import CreateWidgetModal from 'components/modals/CreateWidgetModal';
-import UpdateWidgetModal from 'components/modals/UpdateWidgetModal';
 import Widget from 'components/Widget';
 import { FC, useEffect, useState } from 'react';
 import { useGetUserWidgetsQuery } from 'services/widget';

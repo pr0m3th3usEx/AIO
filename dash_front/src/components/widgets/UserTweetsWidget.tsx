@@ -124,7 +124,7 @@ const UserTweetsWidget = ({
         <Tweet
           id="id"
           created_at="2015-07-07T00:00:00Z"
-          text="This is the last tweet I did . :)"
+          text="A North Korean man who smuggled 'Squid Game' into the country is to be executed by firing squad and a high-school student who bought a USB drive with the show will be jailed for life, report says"
           author={{
             name: 'Epitech Technology',
             username: 'Epitech',

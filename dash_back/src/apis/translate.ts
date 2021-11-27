@@ -150,7 +150,12 @@ export class Translate
     }
 }
 
-
+/*
 const t = new Translate();
 
-t.translate("Salut monde", "fr", t.get_language_code("en")).then(text => console.log(text)).catch(error => console.log(error));
+t.translate("Hello World", t.get_language_code("english"), t.get_language_code("french")).then(text => {
+    console.log(text);
+}).catch(error => {
+    console.log(error);
+});
+*/

@@ -1,12 +1,19 @@
 import { Image } from '@chakra-ui/image';
 import { HStack, Link, StackDivider, Text, VStack } from '@chakra-ui/layout';
-import { WidgetParameter, Post as PostType } from 'services/widget';
+import {
+  WidgetParameter,
+  Post as PostType,
+  Thing,
+  List,
+} from 'services/widget';
 
 interface WidgetProps {
   id: string;
   serviceId: string;
   parameters: WidgetParameter[];
   refreshRate: number;
+  // isLoading: boolean;
+  // data: Thing<List<PostType>>;
 }
 
 const Post = ({
@@ -58,11 +65,9 @@ const SubredditWidget = ({
   serviceId,
   parameters,
   refreshRate,
-}: WidgetProps) => {
-  // setInterval(async () => {
-
-  // }, 1000);
-
+}: // isLoading,
+// data,
+WidgetProps) => {
   return (
     <VStack
       align="start"

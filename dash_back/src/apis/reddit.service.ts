@@ -64,7 +64,7 @@ export class RedditService {
 
     try {
       const res = await axios.post<RedditAccessToken | RedditOAuthError>(
-        '/v1/access_token',
+        'https://www.reddit.com/api/v1/access_token',
         qs.stringify({
           grant_type: 'authorization_code',
           code: query.get('code'),

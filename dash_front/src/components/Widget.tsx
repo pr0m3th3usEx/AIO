@@ -2,7 +2,10 @@ import { Box, HStack, StackDivider, Text, VStack } from '@chakra-ui/layout';
 import { Spinner } from '@chakra-ui/spinner';
 import { useEffect, useState } from 'react';
 import { useGetServiceInfoQuery } from 'services/service';
-import { Widget as WidgetType } from 'services/widget';
+import {
+  useRefreshWidgetMutation,
+  Widget as WidgetType,
+} from 'services/widget';
 import ErrorIllustration from 'assets/error.svg';
 import { Image } from '@chakra-ui/image';
 import detailsIllustration from 'assets/details.svg';
@@ -71,6 +74,7 @@ const WidgetError = ({ activated }: { activated?: boolean }) => {
 };
 
 const Widget = ({ data }: { data: WidgetType }) => {
+  const [currentWidgetData, setCurrentWidgetData] = useState(data);
   const [updateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
   const {
     data: service,
@@ -79,6 +83,16 @@ const Widget = ({ data }: { data: WidgetType }) => {
     isError,
     error,
   } = useGetServiceInfoQuery(data.service_id);
+  const [
+    refreshWidget,
+    {
+      data: refreshData,
+      isLoading: isRefreshing,
+      isSuccess: isRefreshSuccess,
+      isError: isRefreshError,
+      error: refreshError,
+    },
+  ] = useRefreshWidgetMutation();
 
   const toast = useToast();
 
@@ -91,6 +105,32 @@ const Widget = ({ data }: { data: WidgetType }) => {
   const openUpdateWidgetModal = () => {
     setUpdateModalOpen(true);
   };
+
+  useEffect(() => {
+    if (!isRefreshing) {
+      if (isRefreshSuccess) {
+        console.log(refreshData);
+      }
+
+      if (isRefreshError) {
+        console.log(refreshError);
+      }
+    }
+  }, [
+    isRefreshing,
+    isRefreshSuccess,
+    isRefreshError,
+    refreshData,
+    refreshError,
+  ]);
+
+  useEffect(() => {
+    const interval = setInterval(() => refreshWidget(data.id), 1000);
+
+    return function cleanup() {
+      clearInterval(interval);
+    };
+  }, [data]);
 
   return (
     <VStack
@@ -126,7 +166,11 @@ const Widget = ({ data }: { data: WidgetType }) => {
         <WidgetError activated={service?.is_activated} />
       )}
       {!isLoading && isSuccess && service?.is_activated && (
-        <WidgetCanvas widget={data} />
+        <WidgetCanvas
+          widget={currentWidgetData}
+          // isLoading={isRefreshLoading}
+          // data={refreshed}
+        />
       )}
     </VStack>
   );

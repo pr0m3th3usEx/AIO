@@ -1,5 +1,5 @@
 import { HStack, Link, StackDivider, Text, VStack } from '@chakra-ui/layout';
-import { Image } from '@chakra-ui/react';
+import { Image, Skeleton } from '@chakra-ui/react';
 import { TwitterUser, UserTweets, WidgetParameter } from 'services/widget';
 
 interface WidgetProps {
@@ -75,9 +75,6 @@ const UserTweetsWidget = ({
   refreshRate,
   data,
 }: WidgetProps) => {
-  // setInterval(async () => {
-
-  // }, 1000);
   return (
     <VStack
       align="start"
@@ -113,7 +110,19 @@ const UserTweetsWidget = ({
         overflowX="hidden"
         divider={<StackDivider borderColor="gray.200" />}
       >
-        <Tweet
+        {data === undefined ? (
+          <Skeleton />
+        ) : (
+          data.tweets.map((tweet) => (
+            <Tweet
+              id={tweet.id}
+              created_at={tweet.created_at}
+              text={tweet.text}
+              author={data.user}
+            />
+          ))
+        )}
+        {/* <Tweet
           id="id"
           created_at="2015-07-07T00:00:00Z"
           text="This is the last tweet I did . :)"
@@ -184,7 +193,7 @@ const UserTweetsWidget = ({
               'https://pbs.twimg.com/profile_images/1451185966471729156/-BLgag1A_normal.jpg',
             id: '8073902',
           }}
-        />
+        /> */}
       </VStack>
     </VStack>
   );

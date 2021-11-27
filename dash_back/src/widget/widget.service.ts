@@ -10,6 +10,7 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -298,6 +299,19 @@ export class WidgetService {
     }
   }
 
+  private shouldRefreshWidget(
+    last_refresh: Date | null,
+    refresh_rate: number,
+  ): boolean {
+    if (!last_refresh) {
+      return true;
+    }
+
+    return (
+      Math.floor((Date.now() - last_refresh.getTime()) / 1000) >= refresh_rate
+    );
+  }
+
   async refreshWidget(
     widgetId: string,
   ): Promise<Thing<List<Post>> | ExchangeRate | UserTweets> {
@@ -308,6 +322,14 @@ export class WidgetService {
           parameters: true,
           service: true,
         },
+      });
+
+      if (!this.shouldRefreshWidget(widget.last_refresh, widget.refresh_rate)) {
+        throw new UnauthorizedException('Refresh not available now');
+      }
+      await this.prisma.widget.update({
+        where: { id: widgetId },
+        data: { last_refresh: new Date(Date.now()) },
       });
 
       try {
@@ -331,7 +353,11 @@ export class WidgetService {
         throw new InternalServerErrorException();
       }
     } catch (err) {
-      throw new NotFoundException('Widget not found');
+      if (err instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new NotFoundException('Widget not found');
+      } else {
+        throw err;
+      }
     }
   }
 }

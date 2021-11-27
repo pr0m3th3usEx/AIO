@@ -225,13 +225,12 @@ export class TranslateService {
     };
 
     language = language.toLowerCase();
-    let keys = Object.keys(languages).filter((key) => {
+    let keys = Object.keys(languages).filter((key): boolean|string => {
       if (typeof languages[key] !== 'string') {
         return false;
       }
       return languages[key].toLowerCase() === language;
     });
-
     return keys[0] || null;
   };
 

@@ -6,6 +6,7 @@ import {
   IsPositive,
   IsString,
   IsUUID,
+  MinLength,
 } from 'class-validator';
 
 export class WidgetParameterDto {
@@ -27,6 +28,9 @@ export class CreateWidgetDto {
 }
 
 export class UpdateWidgetParameterDto {
+  @IsInt({ message: 'Refresh rate must be positive' })
+  @IsPositive({ message: 'Refresh rate must be positive' })
+  refresh_rate: number;
   @IsArray({ message: 'Parameters must be an array' })
   parameters: WidgetParameterDto[];
 }

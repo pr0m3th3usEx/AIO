@@ -73,7 +73,7 @@
   },
   {
     "name": "TWITTER",
-    "oauth2": true,
+    "oauth2": false,
     "widgets": [
       {
         "name": "user_tweets",

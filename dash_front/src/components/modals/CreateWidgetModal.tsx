@@ -52,7 +52,6 @@ const CreateWidgetModal = ({ onCancel, onClose, isOpen }: ModalProps) => {
   const [addNewWidget, { data, isLoading, isSuccess, isError, error }] =
     useAddNewWidgetMutation();
 
-  const size = useBreakpointValue({ sm: 'SM', md: 'md' });
   const { widgetParameters, setParamElement } = useFieldParameters<
     WidgetParameterDto,
     WidgetParameterConfiguration

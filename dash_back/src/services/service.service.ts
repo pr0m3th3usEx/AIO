@@ -4,7 +4,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { RedditService } from 'src/apis/reddit/reddit.service';
+import { RedditService } from 'src/apis/reddit.service';
+import { TwitterService } from 'src/apis/twitter.service';
 import { FRONT_END_URL, REDDIT_APP_ID } from 'src/config';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
@@ -27,7 +28,18 @@ export class ServiceProvider {
     private userService: UserService,
     private widgetService: WidgetService,
     private redditService: RedditService,
+    private twitterService: TwitterService,
   ) {}
+
+  async getServiceInfo(id: string): Promise<Service> {
+    try {
+      return this.prisma.service.findUnique({
+        where: { id },
+      });
+    } catch (err) {
+      throw new NotFoundException('Service not found');
+    }
+  }
 
   async upsertService(
     user_id: string,
@@ -110,9 +122,6 @@ export class ServiceProvider {
     if (service === 'REDDIT') {
       return this.redditService.getAuthorizationUrl();
     }
-    if (service === 'TWITTER') {
-      return '';
-    }
     return '';
   }
 
@@ -137,6 +146,8 @@ export class ServiceProvider {
 
     if (dto.serviceType === 'REDDIT') {
       return this.redditService.getTokens(query);
+    } else if (dto.serviceType === 'TWITTER') {
+      return this.twitterService.getTokens(query);
     }
 
     return {

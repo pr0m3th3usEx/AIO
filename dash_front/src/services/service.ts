@@ -83,6 +83,12 @@ const extendedApi = api.injectEndpoints({
         body,
       }),
     }),
+
+    getServiceInfo: builder.query<Service, string>({
+      query: (param) => ({
+        url: `/services/${param}`,
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -93,4 +99,5 @@ export const {
   useGetServiceAuthorizationUrlQuery,
   useActivateServiceMutation,
   useGetTokensMutation,
+  useGetServiceInfoQuery,
 } = extendedApi;

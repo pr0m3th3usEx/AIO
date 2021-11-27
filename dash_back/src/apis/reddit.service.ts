@@ -19,6 +19,32 @@ export type RedditOAuthError = {
   error: string;
 };
 
+export type Thing<T> = {
+  id?: string;
+  name?: string;
+  kind: string;
+  data: T;
+};
+
+export type List<T> = {
+  before: string;
+  after: string;
+  modhash: string;
+  children: T[];
+};
+
+export type Post = {
+  author: string;
+  subreddit: string;
+  title: string;
+  url: string;
+  media?: any;
+  score: number;
+  likes: number;
+  clicked: boolean;
+  thumbnail: string;
+};
+
 @Injectable()
 export class RedditService {
   private OAUTH_URL = 'https://www.reddit.com/api/v1/authorize';
@@ -66,9 +92,24 @@ export class RedditService {
     } catch (err) {
       throw err;
     }
-    return {
-      access_token: '',
-      refresh_token: '',
-    };
+  }
+
+  async getNewSubredditPosts(
+    sr: string,
+    access_token: string,
+  ): Promise<Thing<List<Post>>> {
+    return this.instance
+      .get(`r/${sr}/new`, {
+        data: {
+          after: null,
+          before: null,
+          limit: 25,
+          count: null,
+        },
+        headers: {
+          Authorization: 'Bearer ' + access_token,
+        },
+      })
+      .then((response) => response.data);
   }
 }

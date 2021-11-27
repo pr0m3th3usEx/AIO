@@ -8,8 +8,10 @@ import {
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { Interval } from '@nestjs/schedule';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ServiceConfiguration } from 'src/services/services.dto';
 import { CleanedUser } from 'src/user/user.dto';
@@ -23,10 +25,37 @@ import {
   WidgetParameterDto,
 } from './widget.dto';
 import AVAILABLE_SERVICES from 'src/services/services.json';
+import { List, Post, RedditService, Thing } from 'src/apis/reddit.service';
+import { CryptoService, ExchangeRate } from 'src/apis/crypto.service';
+import {
+  Tweet,
+  TwitterService,
+  TwitterTweets,
+  UserTweets,
+} from 'src/apis/twitter.service';
+import { WeatherService } from 'src/apis/weather.service';
+import { TranslateService } from 'src/apis/translate.service';
+import { IntraService } from 'src/apis/intra.service';
 
 @Injectable()
 export class WidgetService {
-  constructor(private prisma: PrismaService, userService: UserService) {}
+  private timer: number = 0;
+
+  constructor(
+    private prisma: PrismaService,
+    private userService: UserService,
+    private cryptoService: CryptoService,
+    private redditService: RedditService,
+    private twitterService: TwitterService,
+    private intraService: IntraService,
+    private weatherService: WeatherService,
+    private translateService: TranslateService,
+  ) {}
+
+  @Interval(1000)
+  increaseTimer() {
+    this.timer += 1;
+  }
 
   private isWidgetRelatedToService(
     serviceType: ServiceType,
@@ -189,8 +218,8 @@ export class WidgetService {
       });
 
       const transaction = await this.prisma.$transaction([
-        deleteWidget,
         deleteWidgetParameters,
+        deleteWidget,
       ]);
 
       return true;
@@ -208,6 +237,13 @@ export class WidgetService {
         where: { id: widget_id },
         include: {
           service: true,
+        },
+      });
+
+      await this.prisma.widget.update({
+        where: { id: widget_id },
+        data: {
+          refresh_rate: params.refresh_rate,
         },
       });
 
@@ -259,6 +295,43 @@ export class WidgetService {
       if (err instanceof Prisma.PrismaClientKnownRequestError) {
         throw new NotFoundException('Widget not found');
       }
+    }
+  }
+
+  async refreshWidget(
+    widgetId: string,
+  ): Promise<Thing<List<Post>> | ExchangeRate | UserTweets> {
+    try {
+      const widget = await this.prisma.widget.findUnique({
+        where: { id: widgetId },
+        include: {
+          parameters: true,
+          service: true,
+        },
+      });
+
+      try {
+        if (widget.type === 'CRYPTO') {
+          return this.cryptoService.getExchangeRate(
+            widget.parameters[0].value_string,
+          );
+        }
+        if (widget.type === 'SUBREDDIT') {
+          return this.redditService.getNewSubredditPosts(
+            widget.parameters[0].value_string,
+            widget.service.access_token,
+          );
+        }
+        if (widget.type === 'USER_TWEETS') {
+          return this.twitterService.getLastTweetsFromUser(
+            widget.parameters[0].value_string,
+          );
+        }
+      } catch (err) {
+        throw new InternalServerErrorException();
+      }
+    } catch (err) {
+      throw new NotFoundException('Widget not found');
     }
   }
 }

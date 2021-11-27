@@ -14,7 +14,7 @@ enum ServiceType {
   GOOGLE
   WEATHER
   CRYPTO
-  INTRA
+  INTRANET
   TWITTER
   REDDIT
 }
@@ -23,9 +23,9 @@ enum WidgetType {
   TRANSLATOR
   CITY_TEMPERATURE
   CRYPTO
-  INTRA
-  TWITTER
-  REDDIT
+  INTRA_INFO
+  USER_TWEETS
+  SUBREDDIT
 }
 
 enum ParameterType {

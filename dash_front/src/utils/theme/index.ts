@@ -2,6 +2,7 @@ import { extendTheme } from '@chakra-ui/react';
 import { createBreakpoints } from '@chakra-ui/theme-tools';
 import Input from './components/input';
 import Button from './components/button';
+import Select from './components/select';
 
 const breakpoints = createBreakpoints({
   sm: '576px',
@@ -33,6 +34,7 @@ const theme = extendTheme({
   components: {
     Input,
     Button,
+    Select,
   },
 });
 

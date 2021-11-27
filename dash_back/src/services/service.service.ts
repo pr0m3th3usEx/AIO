@@ -4,12 +4,19 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { RedditService } from 'src/apis/reddit/reddit.service';
+import { TwitterService } from 'src/apis/twitter/twitter.service';
+import { FRONT_END_URL, REDDIT_APP_ID } from 'src/config';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
+import { WidgetConfiguration } from 'src/widget/widget.dto';
 import { WidgetService } from 'src/widget/widget.service';
 import {
+  AuthorizationDtoUrl,
+  AuthorizationTokens,
   ServiceAvailable,
   ServiceConfiguration,
+  ServiceURLResponse,
   UpsertServiceDto,
 } from './services.dto';
 import AVAILABLE_SERVICES from './services.json';
@@ -20,7 +27,19 @@ export class ServiceProvider {
     private prisma: PrismaService,
     private userService: UserService,
     private widgetService: WidgetService,
+    private redditService: RedditService,
+    private twitterService: TwitterService,
   ) {}
+
+  async getServiceInfo(id: string): Promise<Service> {
+    try {
+      return this.prisma.service.findUnique({
+        where: { id },
+      });
+    } catch (err) {
+      throw new NotFoundException('Service not found');
+    }
+  }
 
   async upsertService(
     user_id: string,
@@ -82,8 +101,58 @@ export class ServiceProvider {
     });
     services.forEach((service) => {
       reduced[service.type].isActivated = service.is_activated;
+      reduced[service.type].id = service.id;
     });
 
     return Object.values(reduced);
+  }
+
+  async getWidgetFromService(type: string): Promise<WidgetConfiguration[]> {
+    const selectedService = (<ServiceConfiguration[]>AVAILABLE_SERVICES).find(
+      (s) => s.name === type,
+    );
+
+    if (!selectedService) {
+      throw new NotFoundException('Service does not exist');
+    }
+    return selectedService.widgets;
+  }
+
+  getServiceParametersURL(service: ServiceType): string {
+    if (service === 'REDDIT') {
+      return this.redditService.getAuthorizationUrl();
+    }
+    return '';
+  }
+
+  async getServiceUrl(service: ServiceType): Promise<ServiceURLResponse> {
+    const selectedService = (<ServiceConfiguration[]>AVAILABLE_SERVICES).find(
+      (s) => s.name === service,
+    );
+
+    if (!selectedService) {
+      throw new NotFoundException('Service does not exist');
+    }
+
+    const authorization_url = this.getServiceParametersURL(service);
+
+    return {
+      authorize_url: authorization_url,
+    };
+  }
+
+  async getTokens(dto: AuthorizationDtoUrl): Promise<AuthorizationTokens> {
+    const query = new URLSearchParams(dto.url);
+
+    if (dto.serviceType === 'REDDIT') {
+      return this.redditService.getTokens(query);
+    } else if (dto.serviceType === 'TWITTER') {
+      return this.twitterService.getTokens(query);
+    }
+
+    return {
+      access_token: '',
+      refresh_token: '',
+    };
   }
 }

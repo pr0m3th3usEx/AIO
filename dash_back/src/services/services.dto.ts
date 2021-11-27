@@ -5,10 +5,12 @@ import {
   IsEnum,
   IsOptional,
   IsString,
+  IsUrl,
 } from 'class-validator';
 import { WidgetConfiguration } from 'src/widget/widget.dto';
 
 export class ServiceAvailable {
+  id: string;
   name: ServiceType;
   oauth2: boolean;
   isActivated: boolean;
@@ -35,6 +37,24 @@ export class ServiceConfiguration {
   name: ServiceType;
   @IsBoolean()
   oauth2: boolean;
+  @IsString()
+  authorization_url: string;
   @IsArray()
   widgets: WidgetConfiguration[];
 }
+
+export type ServiceURLResponse = {
+  authorize_url: string;
+};
+
+export class AuthorizationDtoUrl {
+  @IsString()
+  url: string;
+  @IsEnum(ServiceType)
+  serviceType: ServiceType;
+}
+
+export type AuthorizationTokens = {
+  access_token: string | null;
+  refresh_token: string | null;
+};

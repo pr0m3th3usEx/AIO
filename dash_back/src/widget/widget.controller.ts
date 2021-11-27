@@ -59,4 +59,10 @@ export class WidgetController {
   ): Promise<Widget | string> {
     return this.widgetService.updateWidget(widgetId, parameters);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/:id/refresh')
+  async refreshWidget(@Param('id') widgetId: string): Promise<any> {
+    return this.widgetService.refreshWidget(widgetId);
+  }
 }

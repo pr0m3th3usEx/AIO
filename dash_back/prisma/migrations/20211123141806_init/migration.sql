@@ -2,7 +2,7 @@
 CREATE TYPE "ServiceType" AS ENUM ('GOOGLE', 'WEATHER', 'CRYPTO', 'INTRA', 'TWITTER', 'REDDIT');
 
 -- CreateEnum
-CREATE TYPE "WidgetType" AS ENUM ('GOOGLE', 'WEATHER', 'CRYPTO', 'INTRA', 'TWITTER', 'REDDIT');
+CREATE TYPE "WidgetType" AS ENUM ('TRANSLATOR', 'CITY_TEMPERATURE', 'CRYPTO', 'INTRA', 'TWITTER', 'SUBREDDIT');
 
 -- CreateEnum
 CREATE TYPE "ParameterType" AS ENUM ('INTEGER', 'STRING');
@@ -27,8 +27,8 @@ CREATE TABLE "Service" (
     "user_id" TEXT NOT NULL,
     "is_activated" BOOLEAN NOT NULL,
     "oauth2" BOOLEAN NOT NULL,
-    "access_token" TEXT NOT NULL,
-    "refresh_token" TEXT NOT NULL,
+    "access_token" TEXT,
+    "refresh_token" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -52,6 +52,7 @@ CREATE TABLE "Widget" (
 CREATE TABLE "WidgetParameter" (
     "id" TEXT NOT NULL,
     "widget_id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "type" "ParameterType" NOT NULL,
     "value_int" INTEGER,
     "value_string" TEXT,

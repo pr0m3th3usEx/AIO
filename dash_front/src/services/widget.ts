@@ -135,6 +135,41 @@ export type Translation = {
   text: string;
 };
 
+export type IntraUserInfos = {
+  email: string;
+  firstname: string;
+  lastname: string;
+  picture: string;
+  year: string;
+  promo: number;
+  location: string;
+  credits: number;
+  gpa: number;
+};
+
+export type IntraModuleListInfos = {
+  code: string;
+  title: string;
+};
+
+export type IntraActivity = {
+  begin: string;
+  end: string;
+  title: string;
+  registered: boolean;
+};
+
+export type IntraModuleInfo = {
+  title: string;
+  begin: string;
+  end: string;
+  credits: string;
+  description: string;
+  competences: string;
+  grade: string;
+  activities: IntraActivity[];
+};
+
 const extendedApi = api.injectEndpoints({
   endpoints: (builder) => ({
     addNewWidget: builder.mutation<Widget, CreateWidgetDto>({

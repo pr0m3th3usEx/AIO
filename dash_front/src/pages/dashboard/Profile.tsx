@@ -223,7 +223,10 @@ const ServiceActivator = ({
         serviceId={serviceId}
         serviceName={name}
         onCancel={() => setModalOpen(false)}
-        onSuccess={() => setModalOpen(false)}
+        onSuccess={() => {
+          setModalOpen(false);
+          setActivated(true);
+        }}
         onFailure={() => setModalOpen(false)}
         isOpen={modalOpen}
       />

@@ -106,7 +106,7 @@ export class IntraService {
 
 /*
 const i = new IntraService();
-i.list_module("https://intra.epitech.eu/auth-1e03af3cf61e6c5296b5482ca7f712c3e0d97409").then(j => {
+i.list_module("https://intra.epitech.eu/auth-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX").then(j => {
   console.log(j);
 }).catch(e => {
   console.log(e);

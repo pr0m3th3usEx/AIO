@@ -190,6 +190,9 @@ export class WidgetService {
       include: {
         parameters: true,
       },
+      orderBy: {
+        created_at: 'desc',
+      },
     });
   }
 

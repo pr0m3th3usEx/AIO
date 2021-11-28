@@ -15,6 +15,7 @@ import UserTweetsWidget from './widgets/UserTweetsWidget';
 import UpdateWidgetModal from './modals/UpdateWidgetModal';
 import { toast, useToast } from '@chakra-ui/toast';
 import TranslatorWidget from './widgets/TranslatorWidget';
+import IntraModuleWidget from './widgets/IntraModuleWidget';
 
 const WidgetError = ({
   activated,
@@ -100,7 +101,18 @@ const WidgetCanvas = ({
     );
   }
   // if (widget.type === 'CITY_TEMPERATURE')
-  // if (widget.type === 'INTRA')
+  if (widget.type === 'INTRA_MODULE_INFO') {
+    return (
+      <IntraModuleWidget
+        id={widget.id}
+        serviceId={widget.service_id}
+        lastRefresh={widget.last_refresh}
+        refreshRate={widget.refresh_rate}
+        parameters={widget.parameters}
+        data={data}
+      />
+    );
+  }
   if (widget.type === 'TRANSLATOR') {
     return (
       <TranslatorWidget

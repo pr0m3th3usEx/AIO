@@ -3,8 +3,14 @@ import { WEATHER_API_KEY } from 'src/config';
 import fetch from 'node-fetch';
 
 export type Weather = {
+  dt: number;
   weat: string;
   temp: number;
+};
+
+export type WeatherData = {
+  city: string;
+  weathers: Weather[];
 };
 
 @Injectable()
@@ -23,7 +29,7 @@ export class WeatherService {
         return [
           {
             weat: content.weather[0].main,
-            temp: (content.main.temp - 273.15).toFixed(2),
+            temp: parseFloat((content.main.temp - 273.15).toFixed(2)),
           },
         ];
       })
@@ -32,7 +38,7 @@ export class WeatherService {
       });
   };
 
-  futur = async (city: string, days = 7): Promise<Weather[]> => {
+  futur = async (city: string, days = 7): Promise<WeatherData> => {
     if (days < 0 || days > 16) {
       throw Error('Invalid days number');
     }
@@ -48,14 +54,14 @@ export class WeatherService {
         return info.json();
       })
       .then((content) => {
-        const weather = [];
-        content.list.forEach((element) => {
-          weather.push({
+        return {
+          city: content.city.name,
+          weather: content.list.map((element) => ({
+            dt: element.dt,
             weat: element.weather[0].main,
-            temp: (element.main.temp - 273.15).toFixed(2),
-          });
-        });
-        return weather;
+            temp: parseFloat((element.main.temp - 273.15).toFixed(2)),
+          })),
+        };
       })
       .catch((error) => {
         console.log(error);

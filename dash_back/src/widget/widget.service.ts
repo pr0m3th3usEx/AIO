@@ -34,7 +34,7 @@ import {
   TwitterTweets,
   UserTweets,
 } from 'src/apis/twitter.service';
-import { Weather, WeatherService } from 'src/apis/weather.service';
+import { Weather, WeatherData, WeatherService } from 'src/apis/weather.service';
 import { Translated, TranslateService } from 'src/apis/translate.service';
 import {
   IntraService,
@@ -252,6 +252,7 @@ export class WidgetService {
         where: { id: widget_id },
         data: {
           refresh_rate: params.refresh_rate,
+          last_refresh: null,
         },
       });
 
@@ -326,7 +327,7 @@ export class WidgetService {
     | ExchangeRate
     | UserTweets
     | IntraModuleInfo
-    | Weather[]
+    | WeatherData
     | IntraUserInfos
   > {
     try {

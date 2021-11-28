@@ -170,6 +170,17 @@ export type IntraModuleInfo = {
   activities: IntraActivity[];
 };
 
+export type Weather = {
+  dt: number;
+  weat: string;
+  temp: number;
+};
+
+export type WeatherData = {
+  city: string;
+  weather: Weather[];
+};
+
 const extendedApi = api.injectEndpoints({
   endpoints: (builder) => ({
     addNewWidget: builder.mutation<Widget, CreateWidgetDto>({
@@ -198,7 +209,7 @@ const extendedApi = api.injectEndpoints({
       }),
       invalidatesTags: ['Widget'],
     }),
-    refreshWidget: builder.mutation<void, string>({
+    refreshWidget: builder.mutation<any, string>({
       query: (params) => `/widgets/${params}/refresh`,
       invalidatesTags: ['Widget'],
     }),

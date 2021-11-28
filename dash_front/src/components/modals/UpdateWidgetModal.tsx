@@ -43,7 +43,7 @@ const UpdateWidgetModal = ({
   onClose,
   isOpen,
 }: ModalProps) => {
-  const { widgetParameters, setParamElement } = useFieldParameters<
+  const { widgetParameters, setParamElement, set } = useFieldParameters<
     WidgetParameterDto,
     WidgetParameter
   >(parameters);
@@ -80,13 +80,15 @@ const UpdateWidgetModal = ({
   const toast = useToast();
 
   useEffect(() => {
-    parameters.forEach((value, idx) => {
-      setParamElement(idx, {
-        name: value.name,
-        value: value.value_string ?? value.value_int ?? '',
+    if (set) {
+      parameters.forEach((value, idx) => {
+        setParamElement(idx, {
+          name: value.name,
+          value: value?.value_string ?? value.value_int ?? '',
+        });
       });
-    });
-  }, [parameters]);
+    }
+  }, [parameters, set]);
 
   const onFormSubmit = handleSubmit((data: UpdateWidgetData) => {
     const dto: UpdateWidgetParameterDto = {

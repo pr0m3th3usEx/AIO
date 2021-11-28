@@ -2,9 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { WEATHER_API_KEY } from 'src/config';
 import fetch from 'node-fetch';
 
+export type Weather = {
+  dt: number;
+  weat: string;
+  temp: number;
+};
+
+export type WeatherData = {
+  city: string;
+  weathers: Weather[];
+};
+
 @Injectable()
 export class WeatherService {
-  current = async (city: string) => {
+  current = async (city: string): Promise<Weather> => {
     return await fetch(
       'https://api.openweathermap.org/data/2.5/weather?q=' +
         city +
@@ -18,7 +29,7 @@ export class WeatherService {
         return [
           {
             weat: content.weather[0].main,
-            temp: (content.main.temp - 273.15).toFixed(2),
+            temp: parseFloat((content.main.temp - 273.15).toFixed(2)),
           },
         ];
       })
@@ -27,10 +38,15 @@ export class WeatherService {
       });
   };
 
-  futur = async (city: string, days: number = 7) => {
+  futur = async (city: string, days = 7): Promise<WeatherData> => {
+    if (days < 0 || days > 16) {
+      throw Error('Invalid days number');
+    }
     return await fetch(
       'https://api.openweathermap.org/data/2.5/forecast?q=' +
         city +
+        '&cnt=' +
+        days +
         '&appid=' +
         WEATHER_API_KEY,
     )
@@ -38,16 +54,14 @@ export class WeatherService {
         return info.json();
       })
       .then((content) => {
-        let weather = [];
-        content.list.forEach((element) => {
-          if (element.dt_txt.endsWith('12:00:00')) {
-            weather.push({
-              weat: element.weather[0].main,
-              temp: (element.main.temp - 273.15).toFixed(2),
-            });
-          }
-        });
-        return weather;
+        return {
+          city: content.city.name,
+          weather: content.list.map((element) => ({
+            dt: element.dt,
+            weat: element.weather[0].main,
+            temp: parseFloat((element.main.temp - 273.15).toFixed(2)),
+          })),
+        };
       })
       .catch((error) => {
         console.log(error);
@@ -56,6 +70,6 @@ export class WeatherService {
 }
 
 /*
-const w = new Weather();
-w.current("paris").then(r => console.log(r));
+const w = new WeatherService();
+w.futur("paris", 16).then(r => console.log(r));
 */

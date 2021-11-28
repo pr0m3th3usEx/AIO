@@ -130,7 +130,6 @@ const CreateWidgetModal = ({ onCancel, onClose, isOpen }: ModalProps) => {
       refresh_rate: data.refresh_rate,
       type: data.type,
     };
-    console.log(dto);
 
     addNewWidget(dto);
   };

@@ -27,7 +27,7 @@ const IntraModuleWidget = ({ lastRefresh, parameters, data }: WidgetProps) => {
           fontSize={{ base: '14px', md: '15px', lg: '16px' }}
           fontWeight="700"
         >
-          Information about module{' '}
+          EPITECH - Information about module{' '}
           <Text as="pre" display="inline" fontWeight="500">
             {parameters[0].value_string}
           </Text>

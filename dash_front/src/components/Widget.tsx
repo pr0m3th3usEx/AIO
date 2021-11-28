@@ -16,6 +16,7 @@ import UpdateWidgetModal from './modals/UpdateWidgetModal';
 import { toast, useToast } from '@chakra-ui/toast';
 import TranslatorWidget from './widgets/TranslatorWidget';
 import IntraModuleWidget from './widgets/IntraModuleWidget';
+import IntraUserWidget from './widgets/IntraUserWidget';
 
 const WidgetError = ({
   activated,
@@ -113,6 +114,18 @@ const WidgetCanvas = ({
       />
     );
   }
+  if (widget.type === 'INTRA_USER_INFO') {
+    return (
+      <IntraUserWidget
+        id={widget.id}
+        serviceId={widget.service_id}
+        lastRefresh={widget.last_refresh}
+        refreshRate={widget.refresh_rate}
+        parameters={widget.parameters}
+        data={data}
+      />
+    );
+  }
   if (widget.type === 'TRANSLATOR') {
     return (
       <TranslatorWidget
@@ -121,7 +134,6 @@ const WidgetCanvas = ({
         lastRefresh={widget.last_refresh}
         refreshRate={widget.refresh_rate}
         parameters={widget.parameters}
-        // data={data}
       />
     );
   }

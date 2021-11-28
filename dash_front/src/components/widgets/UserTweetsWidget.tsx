@@ -1,12 +1,14 @@
 import { HStack, Link, StackDivider, Text, VStack } from '@chakra-ui/layout';
-import { Image } from '@chakra-ui/react';
-import { TwitterUser, WidgetParameter } from 'services/widget';
+import { Image, Skeleton } from '@chakra-ui/react';
+import { TwitterUser, UserTweets, WidgetParameter } from 'services/widget';
 
 interface WidgetProps {
   id: string;
   serviceId: string;
+  lastRefresh: Date | null;
   parameters: WidgetParameter[];
   refreshRate: number;
+  data?: UserTweets;
 }
 
 const Tweet = ({
@@ -68,12 +70,11 @@ const Tweet = ({
 const UserTweetsWidget = ({
   id,
   serviceId,
+  lastRefresh,
   parameters,
   refreshRate,
+  data,
 }: WidgetProps) => {
-  // setInterval(async () => {
-
-  // }, 1000);
   return (
     <VStack
       align="start"
@@ -97,7 +98,7 @@ const UserTweetsWidget = ({
           fontSize={{ base: '13px', sm: '13px', md: '14px', lg: '16px' }}
           opacity="0.54"
         >
-          Last refresh:
+          Last refresh: {lastRefresh}
         </Text>
       </VStack>
 
@@ -109,78 +110,18 @@ const UserTweetsWidget = ({
         overflowX="hidden"
         divider={<StackDivider borderColor="gray.200" />}
       >
-        <Tweet
-          id="id"
-          created_at="2015-07-07T00:00:00Z"
-          text="This is the last tweet I did . :)"
-          author={{
-            name: 'Epitech Technology',
-            username: 'Epitech',
-            profile_image_url:
-              'https://pbs.twimg.com/profile_images/1451185966471729156/-BLgag1A_normal.jpg',
-            id: '8073902',
-          }}
-        />
-        <Tweet
-          id="id"
-          created_at="2015-07-07T00:00:00Z"
-          text="A North Korean man who smuggled 'Squid Game' into the country is to be executed by firing squad and a high-school student who bought a USB drive with the show will be jailed for life, report says"
-          author={{
-            name: 'Epitech Technology',
-            username: 'Epitech',
-            profile_image_url:
-              'https://pbs.twimg.com/profile_images/1451185966471729156/-BLgag1A_normal.jpg',
-            id: '8073902',
-          }}
-        />
-        <Tweet
-          id="id"
-          created_at="2015-07-07T00:00:00Z"
-          text="This is the last tweet I did . :)"
-          author={{
-            name: 'Epitech Technology',
-            username: 'Epitech',
-            profile_image_url:
-              'https://pbs.twimg.com/profile_images/1451185966471729156/-BLgag1A_normal.jpg',
-            id: '8073902',
-          }}
-        />
-        <Tweet
-          id="id"
-          created_at="2015-07-07T00:00:00Z"
-          text="This is the last tweet I did . :)"
-          author={{
-            name: 'Epitech Technology',
-            username: 'Epitech',
-            profile_image_url:
-              'https://pbs.twimg.com/profile_images/1451185966471729156/-BLgag1A_normal.jpg',
-            id: '8073902',
-          }}
-        />
-        <Tweet
-          id="id"
-          created_at="2015-07-07T00:00:00Z"
-          text="This is the last tweet I did . :)"
-          author={{
-            name: 'Epitech Technology',
-            username: 'Epitech',
-            profile_image_url:
-              'https://pbs.twimg.com/profile_images/1451185966471729156/-BLgag1A_normal.jpg',
-            id: '8073902',
-          }}
-        />
-        <Tweet
-          id="id"
-          created_at="2015-07-07T00:00:00Z"
-          text="This is the last tweet I did . :)"
-          author={{
-            name: 'Epitech Technology',
-            username: 'Epitech',
-            profile_image_url:
-              'https://pbs.twimg.com/profile_images/1451185966471729156/-BLgag1A_normal.jpg',
-            id: '8073902',
-          }}
-        />
+        {data === undefined ? (
+          <Skeleton />
+        ) : (
+          data.tweets.map((tweet) => (
+            <Tweet
+              id={tweet.id}
+              created_at={tweet.created_at}
+              text={tweet.text}
+              author={data.user}
+            />
+          ))
+        )}
       </VStack>
     </VStack>
   );

@@ -23,7 +23,8 @@ enum WidgetType {
   TRANSLATOR
   CITY_TEMPERATURE
   CRYPTO
-  INTRA_INFO
+  INTRA_MODULE_INFO
+  INTRA_USER_INFO
   USER_TWEETS
   SUBREDDIT
 }
@@ -69,6 +70,7 @@ model Widget {
   refresh_rate  Int
   created_at    DateTime                @default(now())
   updated_at    DateTime                @updatedAt
+  last_refresh  DateTime?
   parameters    WidgetParameter[]
 }
 

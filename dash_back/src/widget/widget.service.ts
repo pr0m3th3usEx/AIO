@@ -10,6 +10,7 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -33,13 +34,17 @@ import {
   TwitterTweets,
   UserTweets,
 } from 'src/apis/twitter.service';
-import { WeatherService } from 'src/apis/weather.service';
-import { TranslateService } from 'src/apis/translate.service';
-import { IntraService } from 'src/apis/intra.service';
+import { Weather, WeatherData, WeatherService } from 'src/apis/weather.service';
+import { Translated, TranslateService } from 'src/apis/translate.service';
+import {
+  IntraService,
+  ModuleInfo as IntraModuleInfo,
+  UserInfos as IntraUserInfos,
+} from 'src/apis/intra.service';
 
 @Injectable()
 export class WidgetService {
-  private timer: number = 0;
+  private timer = 0;
 
   constructor(
     private prisma: PrismaService,
@@ -185,6 +190,9 @@ export class WidgetService {
       include: {
         parameters: true,
       },
+      orderBy: {
+        created_at: 'desc',
+      },
     });
   }
 
@@ -244,6 +252,7 @@ export class WidgetService {
         where: { id: widget_id },
         data: {
           refresh_rate: params.refresh_rate,
+          last_refresh: null,
         },
       });
 
@@ -298,9 +307,29 @@ export class WidgetService {
     }
   }
 
+  private shouldRefreshWidget(
+    last_refresh: Date | null,
+    refresh_rate: number,
+  ): boolean {
+    if (!last_refresh) {
+      return true;
+    }
+
+    return (
+      Math.floor((Date.now() - last_refresh.getTime()) / 1000) >= refresh_rate
+    );
+  }
+
   async refreshWidget(
     widgetId: string,
-  ): Promise<Thing<List<Post>> | ExchangeRate | UserTweets> {
+  ): Promise<
+    | Thing<List<Post>>
+    | ExchangeRate
+    | UserTweets
+    | IntraModuleInfo
+    | WeatherData
+    | IntraUserInfos
+  > {
     try {
       const widget = await this.prisma.widget.findUnique({
         where: { id: widgetId },
@@ -308,6 +337,14 @@ export class WidgetService {
           parameters: true,
           service: true,
         },
+      });
+
+      if (!this.shouldRefreshWidget(widget.last_refresh, widget.refresh_rate)) {
+        throw new UnauthorizedException('Refresh not available now');
+      }
+      await this.prisma.widget.update({
+        where: { id: widgetId },
+        data: { last_refresh: new Date(Date.now()) },
       });
 
       try {
@@ -327,9 +364,49 @@ export class WidgetService {
             widget.parameters[0].value_string,
           );
         }
+        if (widget.type === 'INTRA_MODULE_INFO') {
+          return this.intraService.module(
+            widget.parameters[0].value_string,
+            widget.service.access_token,
+          );
+        }
+        if (widget.type === 'INTRA_USER_INFO') {
+          return this.intraService.user(widget.service.access_token);
+        }
+        if (widget.type === 'CITY_TEMPERATURE') {
+          return this.weatherService.futur(widget.parameters[0].value_string);
+        }
       } catch (err) {
         throw new InternalServerErrorException();
       }
+    } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new NotFoundException('Widget not found');
+      } else {
+        throw err;
+      }
+    }
+  }
+
+  async translate(widgetId: string, text: string): Promise<Translated> {
+    try {
+      const widget = await this.prisma.widget.findUnique({
+        where: { id: widgetId },
+        include: {
+          parameters: true,
+          service: true,
+        },
+      });
+
+      return this.translateService.translate(
+        text,
+        this.translateService.get_language_code(
+          widget.parameters[0].value_string,
+        ),
+        this.translateService.get_language_code(
+          widget.parameters[1].value_string,
+        ),
+      );
     } catch (err) {
       throw new NotFoundException('Widget not found');
     }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { response } from 'express';
 import { COINAPI_KEY } from 'src/config';
@@ -25,5 +25,6 @@ export class CryptoService {
     return this.instance
       .get(`/exchangerate/${from}/${target}`)
       .then((response) => response.data);
+    // .catch((err) => {});
   }
 }

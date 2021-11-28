@@ -82,12 +82,16 @@ export class TwitterService {
   }
 
   async getLastTweetsFromUser(user: string): Promise<UserTweets> {
-    const data = await (
-      await this.instance.get<TwitterTweets>(
-        `/tweets/search/recent?query=from:${user}&tweets.fields=created_att&expansions=author_id&user.fields=name,profile_image_url&max_results=25`,
-      )
-    ).data;
+    try {
+      const data = await (
+        await this.instance.get<TwitterTweets>(
+          `/tweets/search/recent?query=from:${user}&tweet.fields=created_at&expansions=author_id&user.fields=name,profile_image_url&max_results=25`,
+        )
+      ).data;
 
-    return { tweets: data.data, user: data.includes.users[0] };
+      return { tweets: data.data, user: data.includes.users[0] };
+    } catch (err) {
+      console.log(err);
+    }
   }
 }

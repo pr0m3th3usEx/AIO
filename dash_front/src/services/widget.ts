@@ -8,7 +8,8 @@ export type WidgetType =
   | 'TRANSLATOR'
   | 'CITY_TEMPERATURE'
   | 'CRYPTO'
-  | 'INTRA'
+  | 'INTRA_MODULE_INFO'
+  | 'INTRA_USER_INFO'
   | 'USER_TWEETS'
   | 'SUBREDDIT';
 
@@ -31,6 +32,7 @@ export type Widget = {
   refresh_rate: number;
   created_at: Date;
   updated_at: Date;
+  last_refresh: Date | null;
   parameters: WidgetParameter[];
 };
 
@@ -38,6 +40,13 @@ export type AddWidgetFields = {
   refresh_rate: number;
   type: WidgetType;
   serviceName: ServiceType;
+};
+
+export type ExchangeRate = {
+  time: Date;
+  asset_id_base: string;
+  asset_id_quote: string;
+  rate: number;
 };
 
 export class CreateWidgetDto {
@@ -109,15 +118,67 @@ export type List<T> = {
 };
 
 export type Post = {
-  author: string;
-  subreddit: string;
+  data: {
+    author: string;
+    subreddit: string;
+    title: string;
+    url: string;
+    media?: any;
+    score: number;
+    likes: number;
+    clicked: boolean;
+    thumbnail: string;
+  };
+};
+
+export type Translation = {
+  text: string;
+};
+
+export type IntraUserInfos = {
+  email: string;
+  firstname: string;
+  lastname: string;
+  picture: string;
+  year: string;
+  promo: number;
+  location: string;
+  credits: number;
+  gpa: number;
+};
+
+export type IntraModuleListInfos = {
+  code: string;
   title: string;
-  url: string;
-  media?: any;
-  score: number;
-  likes: number;
-  clicked: boolean;
-  thumbnail: string;
+};
+
+export type IntraActivity = {
+  begin: string;
+  end: string;
+  title: string;
+  registered: boolean;
+};
+
+export type IntraModuleInfo = {
+  title: string;
+  begin: string;
+  end: string;
+  credits: string;
+  description: string;
+  competences: string;
+  grade: string;
+  activities: IntraActivity[];
+};
+
+export type Weather = {
+  dt: number;
+  weat: string;
+  temp: number;
+};
+
+export type WeatherData = {
+  city: string;
+  weather: Weather[];
 };
 
 const extendedApi = api.injectEndpoints({
@@ -148,9 +209,17 @@ const extendedApi = api.injectEndpoints({
       }),
       invalidatesTags: ['Widget'],
     }),
+    refreshWidget: builder.mutation<any, string>({
+      query: (params) => `/widgets/${params}/refresh`,
+      invalidatesTags: ['Widget'],
+    }),
     getUserWidgets: builder.query<Widget[], void>({
       query: () => '/widgets/all',
       providesTags: ['Widget'],
+    }),
+    translate: builder.mutation<Translation, { id: string; text: string }>({
+      query: (params) =>
+        `/widgets/${params.id}/translation?text=${params.text}`,
     }),
   }),
   overrideExisting: false,
@@ -160,5 +229,7 @@ export const {
   useAddNewWidgetMutation,
   useUpdateWidgetMutation,
   useRemoveWidgetMutation,
+  useRefreshWidgetMutation,
   useGetUserWidgetsQuery,
+  useTranslateMutation,
 } = extendedApi;

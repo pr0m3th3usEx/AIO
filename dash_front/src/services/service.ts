@@ -5,7 +5,7 @@ export type ServiceType =
   | 'GOOGLE'
   | 'WEATHER'
   | 'CRYPTO'
-  | 'INTRA'
+  | 'INTRANET'
   | 'TWITTER'
   | 'REDDIT';
 

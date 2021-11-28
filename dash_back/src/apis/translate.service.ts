@@ -109,6 +109,10 @@ export const available_languages = [
   'Zulu',
 ];
 
+export type Translated = {
+  text: string;
+};
+
 @Injectable()
 export class TranslateService {
   get_language_code = (language: string) => {
@@ -221,33 +225,28 @@ export class TranslateService {
     };
 
     language = language.toLowerCase();
-    let keys = Object.keys(languages).filter((key) => {
+    const keys = Object.keys(languages).filter((key): boolean | string => {
       if (typeof languages[key] !== 'string') {
         return false;
       }
       return languages[key].toLowerCase() === language;
     });
-
     return keys[0] || null;
   };
 
-  translate = async (text: string, from: string, to: string) => {
+  translate = async (
+    text: string,
+    from: string,
+    to: string,
+  ): Promise<Translated> => {
     return await translation(text, { from, to })
       .then((response) => {
-        return response.text;
+        return {
+          text: response.text,
+        };
       })
       .catch((error) => {
         throw new Error(error);
       });
   };
 }
-
-/*
-const t = new Translate();
-
-t.translate("Hello World", t.get_language_code("english"), t.get_language_code("french")).then(text => {
-    console.log(text);
-}).catch(error => {
-    console.log(error);
-});
-*/

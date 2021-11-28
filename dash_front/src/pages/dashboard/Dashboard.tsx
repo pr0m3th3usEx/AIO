@@ -59,7 +59,7 @@ const Dashboard: FC = (): JSX.Element => {
           Add widget
         </Button>
         <HStack>
-          <Text color="black">Layout manager</Text>
+          <Text color="black"></Text>
         </HStack>
       </HStack>
       <Grid

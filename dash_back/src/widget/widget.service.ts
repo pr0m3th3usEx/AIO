@@ -397,20 +397,15 @@ export class WidgetService {
         },
       });
 
-      console.log(
-        await this.translateService.translate(
-          text,
-          this.translateService.get_language_code(
-            widget.parameters[0].value_string,
-          ),
-          this.translateService.get_language_code(
-            widget.parameters[1].value_string,
-          ),
+      return this.translateService.translate(
+        text,
+        this.translateService.get_language_code(
+          widget.parameters[0].value_string,
+        ),
+        this.translateService.get_language_code(
+          widget.parameters[1].value_string,
         ),
       );
-      return {
-        text: 'good',
-      };
     } catch (err) {
       throw new NotFoundException('Widget not found');
     }

@@ -75,6 +75,7 @@ const TranslatorWidget = ({ id, parameters }: WidgetProps) => {
             resize="none"
           />
           <Button
+            zIndex={1}
             position="absolute"
             bottom="10px"
             right="10px"

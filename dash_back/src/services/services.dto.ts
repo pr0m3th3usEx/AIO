@@ -1,4 +1,5 @@
 import { ServiceType } from '.prisma/client';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
   IsBoolean,
@@ -10,23 +11,36 @@ import {
 import { WidgetConfiguration } from 'src/widget/widget.dto';
 
 export class ServiceAvailable {
+  @ApiProperty()
   id: string;
+  @ApiProperty()
   name: ServiceType;
+  @ApiProperty()
   oauth2: boolean;
+  @ApiProperty()
   isActivated: boolean;
 }
 
 export class UpsertServiceDto {
+  @ApiProperty()
   @IsString()
   @IsOptional()
   id?: string;
+
+  @ApiProperty({ enum: ServiceType })
   @IsEnum(ServiceType, { message: 'Unkwown service' })
   serviceType: ServiceType;
+
+  @ApiProperty()
   @IsBoolean()
   activated: boolean;
+
+  @ApiPropertyOptional()
   @IsString()
   @IsOptional()
   accessToken?: string;
+
+  @ApiPropertyOptional()
   @IsString()
   @IsOptional()
   refreshToken?: string;
@@ -48,8 +62,11 @@ export type ServiceURLResponse = {
 };
 
 export class AuthorizationDtoUrl {
+  @ApiProperty()
   @IsString()
   url: string;
+
+  @ApiProperty({ enum: ServiceType })
   @IsEnum(ServiceType)
   serviceType: ServiceType;
 }

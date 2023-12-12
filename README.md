@@ -1,4 +1,6 @@
-# Dashboard
+# AIO
+
+AIO is a all-in-one services dashboard. Thanks to AIO, you will be able to gather several information about the current services you are using in a unique place.
 
 ## Setup
 
